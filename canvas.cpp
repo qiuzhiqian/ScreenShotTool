@@ -12,10 +12,9 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
     this->setWindowFlags(Qt::WindowStaysOnTopHint);     //窗口置顶
     this->showFullScreen();             //画布全屏显示
 
-    btn_save=new QPushButton("完成",this);
-    btn_save->setVisible(false);
+    initToolBar();
 
-    connect(btn_save,SIGNAL(clicked(bool)),this,SLOT(slt_saveFile()));
+    clipboard = QApplication::clipboard();   //获取系统剪贴板指针
 }
 
 void Canvas::mousePressEvent(QMouseEvent *event)
@@ -68,8 +67,7 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
                 end_x=event->x();
                 end_y=event->y();
                 rectFlag=1;         //矩形绘制完成
-                btn_save->setGeometry(end_x,end_y,50,20);
-                btn_save->setVisible(true);
+                addToolBar();
             }
         }
 
@@ -134,14 +132,36 @@ void Canvas::shootScreen(int x,int y,int width,int height)
 
 }
 
-void Canvas::addToolButton()
+void Canvas::initToolBar()
 {
+    toolbar=new QWidget(this);
+    QHBoxLayout *toolLayout=new QHBoxLayout();
 
+    btn_cancel=new QPushButton(tr("取消"));
+    btn_saveClipboard=new QPushButton(tr("复制"));
+    btn_saveFile=new QPushButton(tr("保存"));
+
+    toolLayout->addWidget(btn_cancel);
+    toolLayout->addWidget(btn_saveClipboard);
+    toolLayout->addWidget(btn_saveFile);
+
+    toolbar->setLayout(toolLayout);
+    toolbar->setVisible(false);
+
+    connect(btn_cancel,SIGNAL(clicked(bool)),this,SLOT(slt_cancel()));
+    connect(btn_saveClipboard,SIGNAL(clicked(bool)),this,SLOT(slt_saveClipboard()));
+    connect(btn_saveFile,SIGNAL(clicked(bool)),this,SLOT(slt_saveFile()));
 }
 
-void Canvas::deleteToolButton()
+void Canvas::addToolBar()
 {
+    toolbar->setGeometry(end_x,end_y,180,50);
+    toolbar->setVisible(true);
+}
 
+void Canvas::deleteToolBar()
+{
+    toolbar->setVisible(false);
 }
 
 void Canvas::slt_saveFile()
@@ -157,10 +177,11 @@ void Canvas::slt_saveFile()
 
 void Canvas::slt_saveClipboard()
 {
-
+    clipboard->setPixmap(originalPixmap);
+    this->deleteLater();
 }
 
-void Canvas::slt_redo()
+void Canvas::slt_cancel()
 {
-
+    this->deleteLater();
 }

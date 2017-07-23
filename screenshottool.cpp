@@ -36,7 +36,7 @@ void ScreenShotTool::slt_ss_start()
 
     screenCanvas=new Canvas(0);     //创建画布
 
-    screenCanvas->setbgPixmap(fullPixmap);
+    screenCanvas->setbgPixmap(fullPixmap);  //传递全屏背景图片
 }
 
 

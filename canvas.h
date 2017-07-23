@@ -1,6 +1,7 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
+#include <QApplication>
 #include <QWidget>
 #include <QLabel>
 #include <QMouseEvent>
@@ -17,6 +18,9 @@
 
 #include <QFileDialog>
 
+#include <QHBoxLayout>
+#include <QClipboard>
+
 class Canvas : public QWidget
 {
     Q_OBJECT
@@ -26,15 +30,16 @@ public:
     void setbgPixmap(QPixmap &px);
     void shootScreen(int x=0,int y=0,int width=-1,int height=-1);
 
-    void addToolButton();
-    void deleteToolButton();
+    void initToolBar();
+    void addToolBar();
+    void deleteToolBar();
 
 signals:
 
 public slots:
     void slt_saveFile();            //保存到文件
     void slt_saveClipboard();       //保存到剪切板
-    void slt_redo();
+    void slt_cancel();
 
 private:
     int screen_width=0,screen_height=0;
@@ -52,7 +57,12 @@ private:
     QPixmap fullPixmap;         //原始全屏图片
     QPixmap originalPixmap;
 
-    QPushButton *btn_save;
+    QWidget *toolbar;           //工具条
+    QPushButton *btn_saveFile;
+    QPushButton *btn_saveClipboard;
+    QPushButton *btn_cancel;
+
+    QClipboard *clipboard;
 
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
