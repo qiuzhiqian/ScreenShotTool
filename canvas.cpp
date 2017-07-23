@@ -1,6 +1,9 @@
 #include "canvas.h"
 #include <QDebug>
 
+#define cmp_min(x1,x2)  do{(x1<x2) ?  x1 : x2}while(0)
+#define cmp_max(x1,x2)  do{(x1<x2) ?  x1 : x2}while(0)
+
 //考虑继承QLabel
 Canvas::Canvas(QWidget *parent) : QWidget(parent)
 {
@@ -23,8 +26,10 @@ void Canvas::mousePressEvent(QMouseEvent *event)
     {
         if(rectFlag==0)
         {
-            start_x=end_x=event->x();
-            start_y=end_y=event->y();
+            pointS.setX(event->x());
+            pointS.setY(event->y());
+            pointE.setX(event->x());
+            pointE.setY(event->y());
         }
         //update();
         dragFlag=0;
@@ -41,8 +46,8 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
     {
         if(rectFlag==0)
         {
-            end_x=event->x();
-            end_y=event->y();
+            pointE.setX(event->x());
+            pointE.setY(event->y());
             dragFlag=1;
         }
         else
@@ -52,6 +57,10 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
 
 
         update();
+
+    }
+    else if(event->buttons()&Qt::NoButton)      //没有按键按下
+    {
 
     }
 }
@@ -64,10 +73,10 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
         {
             if(rectFlag==0)
             {
-                end_x=event->x();
-                end_y=event->y();
+                pointE.setX(event->x());
+                pointE.setY(event->y());
                 rectFlag=1;         //矩形绘制完成
-                addToolBar();
+                addToolBar(shotArea.bottomLeft().x(),shotArea.bottomLeft().y());
             }
         }
 
@@ -77,27 +86,7 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
 
 void Canvas::paintEvent(QPaintEvent *e)
 {
-    if(start_x>end_x)
-    {
-        x1=end_x;
-        x2=start_x;
-    }
-    else
-    {
-        x1=start_x;
-        x2=end_x;
-    }
-
-    if(start_y>end_y)
-    {
-        y1=end_y;
-        y2=start_y;
-    }
-    else
-    {
-        y1=start_y;
-        y2=end_y;
-    }
+    shotArea=getRectF(pointS,pointE);
 
     QPainter painter(this);
 
@@ -108,13 +97,12 @@ void Canvas::paintEvent(QPaintEvent *e)
     painter.drawPixmap(0,0,tempmask);       //然后绘制半透明背景，用来降低亮度
     painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
     //painter.setBrush(Qt::white);
-    QRectF rectangle(x1,y1,(x2-x1),(y2-y1));
-    painter.drawRect(rectangle);            //然后绘制矩形框
-    painter.drawPixmap(rectangle,fullPixmap,rectangle);     //然后将矩形框中的半透明图像替换成原图
+    painter.drawRect(shotArea);            //然后绘制矩形框
+    painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
 
     if(rectFlag==1)     //绘图完成
     {
-        shootScreen(x1,y1,(x2-x1),(y2-y1));
+        shootScreen(shotArea);
     }
     QWidget::paintEvent(e);
 }
@@ -124,11 +112,11 @@ void Canvas::setbgPixmap(QPixmap &px)
     fullPixmap=px;
 }
 
-void Canvas::shootScreen(int x,int y,int width,int height)
+void Canvas::shootScreen(QRectF &rect)
 {
     QScreen *screen = QGuiApplication::primaryScreen();
 
-    originalPixmap = screen->grabWindow(0,x,y,width,height);
+    originalPixmap = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height());
 
 }
 
@@ -153,9 +141,9 @@ void Canvas::initToolBar()
     connect(btn_saveFile,SIGNAL(clicked(bool)),this,SLOT(slt_saveFile()));
 }
 
-void Canvas::addToolBar()
+void Canvas::addToolBar(int x,int y)
 {
-    toolbar->setGeometry(end_x,end_y,180,50);
+    toolbar->setGeometry(x,y,180,50);
     toolbar->setVisible(true);
 }
 
@@ -184,4 +172,36 @@ void Canvas::slt_saveClipboard()
 void Canvas::slt_cancel()
 {
     this->deleteLater();
+}
+
+//通过任意两点构造一个矩形
+QRectF Canvas::getRectF(QPointF p1, QPointF p2)
+{
+    float x1,y1,x2,y2;
+    if(p1.x()<p2.x())
+    {
+        x1=p1.x();
+        x2=p2.x();
+    }
+    else
+    {
+        x1=p2.x();
+        x2=p1.x();
+    }
+
+    if(p1.y()<p2.y())
+    {
+        y1=p1.y();
+        y2=p2.y();
+    }
+    else
+    {
+        y1=p2.y();
+        y2=p1.y();
+    }
+
+    QPointF ps(x1,y1);
+    QPointF pe(x2,y2);
+    QRectF rect(ps,pe);
+    return rect;
 }
