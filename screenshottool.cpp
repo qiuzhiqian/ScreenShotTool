@@ -15,6 +15,20 @@
  * 5\保存截图到文件夹或剪切板
  * */
 
+/*
+ * 截图区域调整策略
+ * 左边--pointLT.x
+ * 右边--pointRB.x
+ * 上边--pointLT.y
+ * 下边--pointRB.y
+ *
+ * 为简化操作，将角调整转化为同时两个边的调整
+ * 左上--同时作用左边、上边
+ * 右下--同时作用右边、下边
+ * 左下--同时作用左边、下边
+ * 右上--同时作用右边、上边
+ * */
+
 ScreenShotTool::ScreenShotTool(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ScreenShotTool)
