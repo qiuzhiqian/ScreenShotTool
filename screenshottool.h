@@ -1,6 +1,13 @@
 #ifndef SCREENSHOTTOOL_H
 #define SCREENSHOTTOOL_H
 
+/*
+ * Author:qiuzhiqian
+ * Email:xia_mengliang@163.com
+ * Github:https://github.com/qiuzhiqian
+ * Date:2017.07.23
+ **/
+
 #include <QWidget>
 #include <QScreen>
 #include <QPixmap>

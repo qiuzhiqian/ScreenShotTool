@@ -1,6 +1,13 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
+/*
+ * Author:qiuzhiqian
+ * Email:xia_mengliang@163.com
+ * Github:https://github.com/qiuzhiqian
+ * Date:2017.07.23
+ **/
+
 #include <QApplication>
 #include <QWidget>
 #include <QLabel>
@@ -52,7 +59,6 @@ private:
     QRectF shotArea;    //截图区域
 
     quint8 rectFlag=0;
-    quint8 dragFlag=0;
 
     QPixmap fullPixmap;         //原始全屏图片
     QPixmap originalPixmap;

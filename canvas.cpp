@@ -1,6 +1,13 @@
 #include "canvas.h"
 #include <QDebug>
 
+/*
+ * Author:qiuzhiqian
+ * Email:xia_mengliang@163.com
+ * Github:https://github.com/qiuzhiqian
+ * Date:2017.07.23
+ **/
+
 #define cmp_min(x1,x2)  do{(x1<x2) ?  x1 : x2}while(0)
 #define cmp_max(x1,x2)  do{(x1<x2) ?  x1 : x2}while(0)
 
@@ -30,13 +37,14 @@ void Canvas::mousePressEvent(QMouseEvent *event)
             pointS.setY(event->y());
             pointE.setX(event->x());
             pointE.setY(event->y());
+            rectFlag=1;
         }
         //update();
-        dragFlag=0;
+        //dragFlag=0;
     }
     else if(event->button()==Qt::RightButton)
     {
-        this->close();
+        slt_cancel();
     }
 }
 
@@ -44,11 +52,11 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
     if(event->buttons()&Qt::LeftButton)
     {
-        if(rectFlag==0)
+        if(rectFlag==1)
         {
             pointE.setX(event->x());
             pointE.setY(event->y());
-            dragFlag=1;
+            //dragFlag=1;
         }
         else
         {
@@ -69,15 +77,12 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
 {
     if(event->button()==Qt::LeftButton)
     {
-        if(dragFlag==1)
+        if(rectFlag==1)
         {
-            if(rectFlag==0)
-            {
-                pointE.setX(event->x());
-                pointE.setY(event->y());
-                rectFlag=1;         //矩形绘制完成
-                addToolBar(shotArea.bottomLeft().x(),shotArea.bottomLeft().y());
-            }
+            pointE.setX(event->x());
+            pointE.setY(event->y());
+            rectFlag=2;         //矩形绘制完成
+            addToolBar(shotArea.bottomLeft().x(),shotArea.bottomLeft().y());
         }
 
         update();
@@ -95,14 +100,44 @@ void Canvas::paintEvent(QPaintEvent *e)
 
     painter.drawPixmap(0,0,fullPixmap);     //先绘制全屏原图背景
     painter.drawPixmap(0,0,tempmask);       //然后绘制半透明背景，用来降低亮度
-    painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
-    //painter.setBrush(Qt::white);
-    painter.drawRect(shotArea);            //然后绘制矩形框
-    painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
 
-    if(rectFlag==1)     //绘图完成
+    switch(rectFlag)        //截图状态机
     {
+    case 0:
+    {
+        break;
+    }
+    case 1:
+    {
+        painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
+        //painter.setBrush(Qt::white);
+        painter.drawRect(shotArea);            //然后绘制矩形框
+        painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
+        break;
+    }
+    case 2:
+    {
+        painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
+        //painter.setBrush(Qt::white);
+        painter.drawRect(shotArea);            //然后绘制矩形框
+        painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
         shootScreen(shotArea);
+
+        rectFlag=3;
+        break;
+    }
+    case 3:
+    {
+        painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
+        //painter.setBrush(Qt::white);
+        painter.drawRect(shotArea);            //然后绘制矩形框
+        painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
+        break;
+    }
+    default:
+    {
+        break;
+    }
     }
     QWidget::paintEvent(e);
 }
@@ -160,18 +195,19 @@ void Canvas::slt_saveFile()
             tr("JPEG File (*.jpg)"));
     originalPixmap.save(fileName,"jpg");
 
-    this->deleteLater();
+    slt_cancel();
 }
 
 void Canvas::slt_saveClipboard()
 {
     clipboard->setPixmap(originalPixmap);
-    this->deleteLater();
+    slt_cancel();
 }
 
 void Canvas::slt_cancel()
 {
-    this->deleteLater();
+    rectFlag=0;
+    this->close();
 }
 
 //通过任意两点构造一个矩形

@@ -2,6 +2,13 @@
 #include "ui_screenshottool.h"
 
 /*
+ * Author:qiuzhiqian
+ * Email:xia_mengliang@163.com
+ * Github:https://github.com/qiuzhiqian
+ * Date:2017.07.23
+ **/
+
+/*
  * 画图原理
  * 1\首先在全屏幕设置一个透明画布
  * 2\然后在透明画布上绘制矩形
