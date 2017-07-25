@@ -25,6 +25,8 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
     initToolBar();
 
     clipboard = QApplication::clipboard();   //获取系统剪贴板指针
+
+    setMouseTracking(true);
 }
 
 void Canvas::mousePressEvent(QMouseEvent *event)
@@ -39,6 +41,10 @@ void Canvas::mousePressEvent(QMouseEvent *event)
             pointE.setY(event->y());
             rectFlag=1;
         }
+        else if(rectFlag==3)    //捕捉拖拽
+        {
+
+        }
         //update();
         //dragFlag=0;
     }
@@ -50,6 +56,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 
 void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
+    //qDebug("x=%d,y=%d",event->x(),event->y());
     if(event->buttons()&Qt::LeftButton)
     {
         if(rectFlag==1)
@@ -67,9 +74,113 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
         update();
 
     }
-    else if(event->buttons()&Qt::NoButton)      //没有按键按下
+    else if(event->buttons()==Qt::NoButton)      //没有按键按下
     {
 
+        if(rectFlag==3)    //捕捉拖拽
+        {
+            int temp_x=event->x();
+            int temp_y=event->y();
+            quint8 cursorPosFlag=0;
+
+            if(qAbs(temp_x-shotArea.topLeft().x())<2)           //左
+            {
+                if(qAbs(temp_y-shotArea.topLeft().y())<2)       //上
+                {
+                    cursorPosFlag=1;
+                }
+                else if(qAbs(temp_y-shotArea.bottomRight().y())<2)   //下
+                {
+                    cursorPosFlag=2;
+                }
+                else if( (temp_y>=shotArea.topLeft().y()+2) && (temp_y<=shotArea.bottomRight().y()-2) )  //上下之间
+                {
+                    cursorPosFlag=3;
+                }
+                else
+                {
+                    cursorPosFlag=0;
+                }
+            }
+            else if(qAbs(temp_x-shotArea.bottomRight().x())<2)          //右
+            {
+                if(qAbs(temp_y-shotArea.topLeft().y())<2)       //上
+                {
+                    cursorPosFlag=4;
+                }
+                else if(qAbs(temp_y-shotArea.bottomRight().y())<2)   //下
+                {
+                    cursorPosFlag=5;
+                }
+                else if( (temp_y>=shotArea.topLeft().y()+2) && (temp_y<=shotArea.bottomRight().y()-2) )  //上下之间
+                {
+                    cursorPosFlag=6;
+                }
+                else
+                {
+                    cursorPosFlag=0;
+                }
+            }
+            else if((temp_x>=shotArea.topLeft().x()+2) && (temp_x<=shotArea.bottomRight().x()-2))          //左右之间
+            {
+                if(qAbs(temp_y-shotArea.topLeft().y())<2)       //上
+                {
+                    cursorPosFlag=7;
+                }
+                else if(qAbs(temp_y-shotArea.bottomRight().y())<2)   //下
+                {
+                    cursorPosFlag=8;
+                }
+                else if( (temp_y>=shotArea.topLeft().y()+2) && (temp_y<=shotArea.bottomRight().y()-2) )  //上下之间
+                {
+                    cursorPosFlag=9;
+                }
+                else
+                {
+                    cursorPosFlag=0;
+                }
+            }
+            else
+            {
+                cursorPosFlag=0;
+            }
+
+            switch(cursorPosFlag)
+            {
+            case 0:                                 //无效区域
+                setCursor(Qt::ArrowCursor);
+                break;
+            case 1:                                 //左上
+                setCursor(Qt::SizeFDiagCursor);
+                break;
+            case 2:                                 //左下
+                setCursor(Qt::SizeBDiagCursor);
+                break;
+            case 3:                                 //左边
+                setCursor(Qt::SizeHorCursor);
+                break;
+
+            case 4:                                 //右上
+                setCursor(Qt::SizeBDiagCursor);
+                break;
+            case 5:                                 //右下
+                setCursor(Qt::SizeFDiagCursor);
+                break;
+            case 6:                                 //右边
+                setCursor(Qt::SizeHorCursor);
+                break;
+            case 7:                                 //上边
+                setCursor(Qt::SizeVerCursor);
+                break;
+            case 8:                                 //下边
+                setCursor(Qt::SizeVerCursor);
+                break;
+            case 9:                                 //中央
+                setCursor(Qt::SizeAllCursor);
+                break;
+            }
+
+        }
     }
 }
 

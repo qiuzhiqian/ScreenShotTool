@@ -28,6 +28,7 @@
 #include <QHBoxLayout>
 #include <QClipboard>
 
+
 class Canvas : public QWidget
 {
     Q_OBJECT
