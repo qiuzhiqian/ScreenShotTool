@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         screenshottool.cpp \
-    canvas.cpp
+    canvas.cpp \
+    shotcut.cpp
 
 HEADERS += \
         screenshottool.h \
-    canvas.h
+    canvas.h \
+    shotcut.h
 
 FORMS += \
         screenshottool.ui

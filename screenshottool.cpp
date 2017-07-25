@@ -54,6 +54,10 @@ ScreenShotTool::ScreenShotTool(QWidget *parent) :
     this->setAttribute(Qt::WA_ShowModal, true);
     this->setWindowModality(Qt::ApplicationModal);
 
+    sc_set=new ShotCut(this);
+    sc_set->setReadOnly(true);
+    sc_set->setGeometry(110,30,113,20);
+
     initTray();                             //托盘显示
 }
 

@@ -20,6 +20,7 @@
 #include <QMenu>
 
 #include "canvas.h"
+#include "shotcut.h"
 
 namespace Ui {
 class ScreenShotTool;
@@ -51,6 +52,8 @@ private:
 
     void closeEvent( QCloseEvent * event );     //重写退出
     bool closeFlag=false;
+
+    ShotCut *sc_set;
 
 signals:
     void appQuit();
