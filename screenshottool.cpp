@@ -1,6 +1,8 @@
 #include "screenshottool.h"
 #include "ui_screenshottool.h"
 
+#include <QDebug>
+
 /*
  * Author:qiuzhiqian
  * Email:xia_mengliang@163.com
@@ -42,7 +44,17 @@ ScreenShotTool::ScreenShotTool(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->btn_start,SIGNAL(clicked(bool)),this,SLOT(slt_ss_start()));
+    QWidget * xparent = new QWidget;        //设置一个空的父对象，从而达到掩藏任务栏图标的目的
+
+    setParent(xparent);
+
+    this->setWindowFlags(Qt::Dialog|Qt::WindowCloseButtonHint|Qt::WindowStaysOnTopHint);
+    this->setWindowTitle(tr("设置"));
+    this->setWindowIcon(QIcon(":/ss.png"));
+    this->setAttribute(Qt::WA_ShowModal, true);
+    this->setWindowModality(Qt::ApplicationModal);
+
+    initTray();                             //托盘显示
 }
 
 ScreenShotTool::~ScreenShotTool()
@@ -50,7 +62,7 @@ ScreenShotTool::~ScreenShotTool()
     delete ui;
 }
 
-void ScreenShotTool::slt_ss_start()
+void ScreenShotTool::ss_start()
 {
     QScreen *screen = QGuiApplication::primaryScreen();
     fullPixmap = screen->grabWindow(0);
@@ -58,6 +70,80 @@ void ScreenShotTool::slt_ss_start()
     screenCanvas=new Canvas(0);     //创建画布
 
     screenCanvas->setbgPixmap(fullPixmap);  //传递全屏背景图片
+}
+
+void ScreenShotTool::initTray()
+{
+    m_systemTray = new QSystemTrayIcon(this);
+    m_systemTray->setIcon(QIcon(":/ss.png"));
+    m_systemTray->setToolTip("ScreenShot");
+
+    setAction=new QAction(tr("设置"),this);
+    aboutAction=new QAction(tr("关于"),this);
+    exitAction=new QAction(tr("退出"),this);
+
+    QMenu *trayMenu=new QMenu(this);
+    trayMenu->addAction(setAction);
+    trayMenu->addAction(aboutAction);
+    trayMenu->addSeparator();
+    trayMenu->addAction(exitAction);
+
+    m_systemTray->setContextMenu(trayMenu);
+
+    m_systemTray->show();
+
+    connect(m_systemTray,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(slt_clickTray(QSystemTrayIcon::ActivationReason)));
+    connect(setAction,SIGNAL(triggered(bool)),this,SLOT(slt_setAction()));
+    connect(aboutAction,SIGNAL(triggered(bool)),this,SLOT(slt_aboutAction()));
+    connect(exitAction,SIGNAL(triggered(bool)),this,SLOT(slt_exitAction()));
+}
+
+void ScreenShotTool::slt_clickTray(QSystemTrayIcon::ActivationReason reason)
+{
+    switch(reason)
+    {
+    case QSystemTrayIcon::Trigger:
+        //单击托盘图标,开始截图
+        ss_start();
+        break;
+    case QSystemTrayIcon::DoubleClick:
+        //双击托盘图标
+        //双击后显示设置窗口
+        this->show();
+        break;
+    default:
+        break;
+    }
+}
+
+void ScreenShotTool::slt_setAction()
+{
+    this->show();
+}
+
+void ScreenShotTool::slt_aboutAction()
+{
+
+}
+
+void ScreenShotTool::slt_exitAction()
+{
+    closeFlag=true;
+    this->close();
+    QApplication::quit();       //程序退出
+}
+
+void ScreenShotTool::closeEvent(QCloseEvent *event)
+{
+    if(closeFlag==true)
+    {
+        event->accept();
+    }
+    else
+    {
+        this->hide();
+        event->ignore();
+    }
 }
 
 

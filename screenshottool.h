@@ -9,10 +9,15 @@
  **/
 
 #include <QWidget>
+#include <QDialog>
 #include <QScreen>
 #include <QPixmap>
 #include <QMouseEvent>
 #include <QDesktopWidget>
+
+#include <QSystemTrayIcon>
+
+#include <QMenu>
 
 #include "canvas.h"
 
@@ -28,6 +33,8 @@ public:
     explicit ScreenShotTool(QWidget *parent = 0);
     ~ScreenShotTool();
 
+    void initTray();                //初始化托盘
+    void ss_start();                //开始截图
 
 
 private:
@@ -37,8 +44,24 @@ private:
 
     QPixmap fullPixmap;
 
+    QSystemTrayIcon *m_systemTray;  //系统托盘
+    QAction *setAction;
+    QAction *aboutAction;
+    QAction *exitAction;
+
+    void closeEvent( QCloseEvent * event );     //重写退出
+    bool closeFlag=false;
+
+signals:
+    void appQuit();
+
+
 private slots:
-    void slt_ss_start();
+
+    void slt_clickTray(QSystemTrayIcon::ActivationReason reason);
+    void slt_setAction();
+    void slt_aboutAction();
+    void slt_exitAction();
 };
 
 #endif // SCREENSHOTTOOL_H

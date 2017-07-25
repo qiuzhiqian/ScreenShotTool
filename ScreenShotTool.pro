@@ -34,3 +34,6 @@ HEADERS += \
 
 FORMS += \
         screenshottool.ui
+
+RESOURCES += \
+    screenshottool.qrc

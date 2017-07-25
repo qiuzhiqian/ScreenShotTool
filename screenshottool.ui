@@ -13,18 +13,41 @@
   <property name="windowTitle">
    <string>ScreenShotTool</string>
   </property>
-  <widget class="QPushButton" name="btn_start">
+  <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>40</y>
-     <width>75</width>
-     <height>23</height>
+     <x>9</x>
+     <y>9</y>
+     <width>301</width>
+     <height>141</height>
     </rect>
    </property>
-   <property name="text">
-    <string>截图</string>
+   <property name="title">
+    <string>全局快捷键</string>
    </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>54</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>截图</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>30</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
