@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QGuiApplication>
 
+
 /*
  * Author:qiuzhiqian
  * Email:xia_mengliang@163.com
@@ -12,9 +13,13 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+
     a.setQuitOnLastWindowClosed(false);
     ScreenShotTool w;
     w.hide();
+
+    a.installNativeEventFilter(&w);
 
     return a.exec();
 }

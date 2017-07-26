@@ -27,12 +27,12 @@ SOURCES += \
         main.cpp \
         screenshottool.cpp \
     canvas.cpp \
-    shotcut.cpp
+    shotcut.cpp \
 
 HEADERS += \
         screenshottool.h \
     canvas.h \
-    shotcut.h
+    shotcut.h \
 
 FORMS += \
         screenshottool.ui

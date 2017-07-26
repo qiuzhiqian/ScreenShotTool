@@ -3,9 +3,23 @@
 ShotCut::ShotCut(QWidget *parent) :
     QLineEdit(parent)
 {
-    keymod=Qt::NoModifier;
+    keymod=Qt::ControlModifier;
     keyval=Qt::Key_F1;
-    setText("F1");
+    setText("Ctrl+F1");
+    this->setFocusPolicy(Qt::TabFocus|Qt::ClickFocus);
+    this->setStyleSheet("QLineEdit{border:2px solid rgb(240, 240, 240);}");
+}
+
+void ShotCut::focusInEvent(QFocusEvent *e)
+{
+    QLineEdit::focusInEvent(e);
+    this->setStyleSheet("QLineEdit{border:2px solid rgb(163, 219, 144);}");
+}
+
+void ShotCut::focusOutEvent(QFocusEvent *e)
+{
+    QLineEdit::focusOutEvent(e);
+    this->setStyleSheet("QLineEdit{border:2px solid rgb(240, 240, 240);}");
 }
 
 void ShotCut::keyPressEvent(QKeyEvent *event)
@@ -13,7 +27,9 @@ void ShotCut::keyPressEvent(QKeyEvent *event)
     QString showtext="";
     //qDebug("modify=%x,key=%x",event->modifiers(),event->key());
     keymod=event->modifiers();
-    keyval=event->key();
+    keyval=Qt::Key(event->key());
+
+    sgn_hotKeyChanged(keyval,keymod);
 
     switch(keymod)
     {

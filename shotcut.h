@@ -12,10 +12,15 @@ public:
     ShotCut(QWidget *parent = 0);
 
 private:
+    void focusInEvent(QFocusEvent *e);          //获取焦点
+    void focusOutEvent(QFocusEvent *e);         //失去焦点
     void keyPressEvent(QKeyEvent *event);
 
-    int keymod;
-    int keyval;
+    Qt::KeyboardModifiers keymod;
+    Qt::Key keyval;
+
+signals:
+    void sgn_hotKeyChanged(Qt::Key t_key,Qt::KeyboardModifiers t_mod);
 };
 
 #endif // SHOTCUT_H
