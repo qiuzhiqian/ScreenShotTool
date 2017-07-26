@@ -6,7 +6,7 @@ ShotCut::ShotCut(QWidget *parent) :
     keymod=Qt::ControlModifier;
     keyval=Qt::Key_F1;
     setText("Ctrl+F1");
-    this->setFocusPolicy(Qt::TabFocus|Qt::ClickFocus);
+    this->setFocusPolicy(Qt::FocusPolicy(Qt::TabFocus|Qt::ClickFocus));
     this->setStyleSheet("QLineEdit{border:2px solid rgb(240, 240, 240);}");
 }
 

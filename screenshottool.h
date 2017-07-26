@@ -53,6 +53,7 @@ public:
     bool  unregisterHotKey(Qt::Key key,Qt::KeyboardModifiers modifiers);
 
 
+
 private:
     Ui::ScreenShotTool *ui;
 
@@ -85,6 +86,8 @@ private slots:
     void slt_exitAction();
 
     void slt_changeShotCut(Qt::Key t_key,Qt::KeyboardModifiers t_mod);
+
+    void slt_auto_run(int states);
 };
 
 #endif // SCREENSHOTTOOL_H

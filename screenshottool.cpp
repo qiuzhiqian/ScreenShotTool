@@ -2,6 +2,7 @@
 #include "ui_screenshottool.h"
 
 #include <QDebug>
+#include <QSettings>
 
 
 /*
@@ -57,6 +58,7 @@ ScreenShotTool::ScreenShotTool(QWidget *parent) :
     sc_set->setReadOnly(true);
     sc_set->setGeometry(90,25,113,20);
     connect(sc_set,SIGNAL(sgn_hotKeyChanged(Qt::Key,Qt::KeyboardModifiers)),this,SLOT(slt_changeShotCut(Qt::Key,Qt::KeyboardModifiers)));
+    connect(ui->checkBox,SIGNAL(stateChanged(int)),this,SLOT(slt_auto_run(int)));
 
     this->setFixedSize(this->size());
 
@@ -360,4 +362,17 @@ void ScreenShotTool::slt_changeShotCut(Qt::Key t_key, Qt::KeyboardModifiers t_mo
     key=t_key;
     mods=t_mod;
     registerHotKey(key,mods);
+}
+
+void ScreenShotTool::slt_auto_run(int states)
+{
+    QSettings *reg=new QSettings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
+    if(states == Qt::Checked)
+    {
+        reg->setValue("app",QApplication::applicationFilePath());
+    }
+    else
+    {
+        reg->setValue("app","");
+    }
 }
