@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>ss.png</file>
+        <file>setting.ini</file>
     </qresource>
 </RCC>

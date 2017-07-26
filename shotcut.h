@@ -10,6 +10,7 @@ class ShotCut : public QLineEdit
     Q_OBJECT
 public:
     ShotCut(QWidget *parent = 0);
+    void setShotCut(Qt::Key t_key,Qt::KeyboardModifiers t_mod);
 
 private:
     void focusInEvent(QFocusEvent *e);          //获取焦点

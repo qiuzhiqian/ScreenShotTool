@@ -10,28 +10,17 @@ ShotCut::ShotCut(QWidget *parent) :
     this->setStyleSheet("QLineEdit{border:2px solid rgb(240, 240, 240);}");
 }
 
-void ShotCut::focusInEvent(QFocusEvent *e)
+void ShotCut::setShotCut(Qt::Key t_key, Qt::KeyboardModifiers t_mod)
 {
-    QLineEdit::focusInEvent(e);
-    this->setStyleSheet("QLineEdit{border:2px solid rgb(163, 219, 144);}");
+    keyval=t_key;
+    keymod=t_mod;
+    setShowText(t_key,t_mod);
 }
 
-void ShotCut::focusOutEvent(QFocusEvent *e)
-{
-    QLineEdit::focusOutEvent(e);
-    this->setStyleSheet("QLineEdit{border:2px solid rgb(240, 240, 240);}");
-}
-
-void ShotCut::keyPressEvent(QKeyEvent *event)
+QString &ShotCut::setShowText(Qt::Key t_key, Qt::KeyboardModifiers t_mod)
 {
     QString showtext="";
-    //qDebug("modify=%x,key=%x",event->modifiers(),event->key());
-    keymod=event->modifiers();
-    keyval=Qt::Key(event->key());
-
-    sgn_hotKeyChanged(keyval,keymod);
-
-    switch(keymod)
+    switch(t_mod)
     {
     case Qt::NoModifier:
         showtext="";
@@ -49,7 +38,7 @@ void ShotCut::keyPressEvent(QKeyEvent *event)
         break;
     }
 
-    switch(keyval)
+    switch(t_key)
     {
     case Qt::Key_Escape:
         showtext+="Esc";
@@ -251,4 +240,30 @@ void ShotCut::keyPressEvent(QKeyEvent *event)
     }
 
     setText(showtext);
+    return showtext;
+}
+
+void ShotCut::focusInEvent(QFocusEvent *e)
+{
+    QLineEdit::focusInEvent(e);
+    this->setStyleSheet("QLineEdit{border:2px solid rgb(163, 219, 144);}");
+}
+
+void ShotCut::focusOutEvent(QFocusEvent *e)
+{
+    QLineEdit::focusOutEvent(e);
+    this->setStyleSheet("QLineEdit{border:2px solid rgb(240, 240, 240);}");
+}
+
+void ShotCut::keyPressEvent(QKeyEvent *event)
+{
+    //qDebug("modify=%x,key=%x",event->modifiers(),event->key());
+    keymod=event->modifiers();
+    keyval=Qt::Key(event->key());
+
+    sgn_hotKeyChanged(keyval,keymod);
+
+    setShowText(keyval,keymod);
+
+
 }

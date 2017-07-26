@@ -366,13 +366,15 @@ void ScreenShotTool::slt_changeShotCut(Qt::Key t_key, Qt::KeyboardModifiers t_mo
 
 void ScreenShotTool::slt_auto_run(int states)
 {
-    QSettings *reg=new QSettings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
+    //QSettings *reg=new QSettings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
     if(states == Qt::Checked)
     {
-        reg->setValue("app",QApplication::applicationFilePath());
+        qDebug("开机自启");
+        //reg->setValue("app",QApplication::applicationFilePath());
     }
     else
     {
-        reg->setValue("app","");
+        qDebug("关闭开机自启");
+        //reg->setValue("app","");
     }
 }
