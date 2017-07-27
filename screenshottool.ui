@@ -52,6 +52,9 @@
     <string>设置项</string>
    </property>
    <widget class="QCheckBox" name="checkBox">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>90</x>
@@ -62,6 +65,9 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">

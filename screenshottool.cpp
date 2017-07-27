@@ -4,12 +4,15 @@
 #include <QDebug>
 #include <QSettings>
 
+#include "operateSet.h"
+
 
 /*
  * Author:qiuzhiqian
  * Email:xia_mengliang@163.com
  * Github:https://github.com/qiuzhiqian
  * Date:2017.07.23
+ * Description:这个类主要用来进行截图工具的设置
  **/
 
 /*
@@ -54,17 +57,28 @@ ScreenShotTool::ScreenShotTool(QWidget *parent) :
     this->setWindowTitle(tr("设置"));
     this->setWindowIcon(QIcon(":/ss.png"));
 
-    sc_set=new ShotCut(ui->groupBox);
+    keystring=new KeyString();
+
+    sc_set=new HotKeyBar(ui->groupBox);
+    sc_set->setKeyString(keystring);
     sc_set->setReadOnly(true);
     sc_set->setGeometry(90,25,113,20);
-    connect(sc_set,SIGNAL(sgn_hotKeyChanged(Qt::Key,Qt::KeyboardModifiers)),this,SLOT(slt_changeShotCut(Qt::Key,Qt::KeyboardModifiers)));
+    connect(sc_set,SIGNAL(sgn_hotKeyChanged(Qt::Key,Qt::KeyboardModifiers)),this,SLOT(slt_changeHotKey(Qt::Key,Qt::KeyboardModifiers)));
     connect(ui->checkBox,SIGNAL(stateChanged(int)),this,SLOT(slt_auto_run(int)));
 
     this->setFixedSize(this->size());
-
-    setShotCut();
-
     initTray();                             //托盘显示
+
+    const QString temp_str="CTRL+F3";
+    QString keystr=OperateSet::readSetting("HotKey","ScreenShot",temp_str).toString();
+    keystring->String2Key(keystr,key,mods);
+    sc_set->setHotKey(key,mods);
+    setHotKey();
+
+    isAutoRun=bool(OperateSet::readSetting("Setting","AutoRun",0).toInt());
+    qDebug()<<isAutoRun;
+    ui->checkBox->setChecked(isAutoRun);
+    setAutoRun(isAutoRun);
 }
 
 ScreenShotTool::~ScreenShotTool()
@@ -83,7 +97,7 @@ void ScreenShotTool::ss_start()             //开始截屏
     screenCanvas->setbgPixmap(fullPixmap);  //传递全屏背景图片
 }
 
-void ScreenShotTool::initTray()
+void ScreenShotTool::initTray()             //初始化托盘
 {
     m_systemTray = new QSystemTrayIcon(this);
     m_systemTray->setIcon(QIcon(":/ss.png"));
@@ -157,7 +171,7 @@ void ScreenShotTool::closeEvent(QCloseEvent *event)
     }
 }
 
-void ScreenShotTool::setShotCut()
+void ScreenShotTool::setHotKey()
 {
     key=Qt::Key_F1;
     mods=Qt::ControlModifier;
@@ -171,7 +185,7 @@ bool ScreenShotTool::nativeEventFilter(const QByteArray &eventType, void *messag
         MSG* msg = reinterpret_cast<MSG*>(message);
         if(msg->message == WM_HOTKEY)
         {
-            qDebug("wParam=%d,keycode=%d,modifiers=%d",msg->wParam,HIWORD(msg->lParam),LOWORD(msg->lParam));
+            //qDebug("wParam=%d,keycode=%d,modifiers=%d",msg->wParam,HIWORD(msg->lParam),LOWORD(msg->lParam));
             if(HIWORD(msg->lParam)==nativeKeycode(key)&&LOWORD(msg->lParam)==nativeModifiers(mods))
             {
                 ss_start();
@@ -355,26 +369,46 @@ bool  ScreenShotTool::unregisterHotKey(Qt::Key key,Qt::KeyboardModifiers modifie
     return UnregisterHotKey(0, (quint32)nativeModifiers(modifiers) ^ (quint32)nativeKeycode(key));
 }
 
-void ScreenShotTool::slt_changeShotCut(Qt::Key t_key, Qt::KeyboardModifiers t_mod)      //快捷键修改
+void ScreenShotTool::slt_changeHotKey(Qt::Key t_key, Qt::KeyboardModifiers t_mod)      //快捷键修改
 {
     qDebug("change shotcut");
     unregisterHotKey(key,mods);
     key=t_key;
     mods=t_mod;
     registerHotKey(key,mods);
+
+    QString strval=keystring->Key2String(key,mods);
+
+    OperateSet::writeSetting("HotKey","ScreenShot",strval);
 }
 
 void ScreenShotTool::slt_auto_run(int states)
 {
-    //QSettings *reg=new QSettings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
     if(states == Qt::Checked)
     {
         qDebug("开机自启");
-        //reg->setValue("app",QApplication::applicationFilePath());
+        isAutoRun=true;
+        OperateSet::writeSetting("Setting","AutoRun",1);
     }
     else
     {
         qDebug("关闭开机自启");
+        isAutoRun=false;
+        OperateSet::writeSetting("Setting","AutoRun",0);
+    }
+
+    setAutoRun(isAutoRun);
+}
+
+void ScreenShotTool::setAutoRun(bool sta)
+{
+    QSettings *reg=new QSettings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
+    if(sta == true)
+    {
+        //reg->setValue("app",QApplication::applicationFilePath());
+    }
+    else
+    {
         //reg->setValue("app","");
     }
 }

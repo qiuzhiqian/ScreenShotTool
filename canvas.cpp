@@ -1,15 +1,20 @@
 #include "canvas.h"
+
+#include <QFileInfo>
+
 #include <QDebug>
+
+#include <QDateTime>
+
+#include "operateSet.h"
 
 /*
  * Author:qiuzhiqian
  * Email:xia_mengliang@163.com
  * Github:https://github.com/qiuzhiqian
  * Date:2017.07.23
+ * Description:这个类主要用来创建一个桌面的截图画布
  **/
-
-#define cmp_min(x1,x2)  do{(x1<x2) ?  x1 : x2}while(0)
-#define cmp_max(x1,x2)  do{(x1<x2) ?  x1 : x2}while(0)
 
 //考虑继承QLabel
 Canvas::Canvas(QWidget *parent) : QWidget(parent)
@@ -26,7 +31,7 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
 
     clipboard = QApplication::clipboard();   //获取系统剪贴板指针
 
-    setMouseTracking(true);
+    setMouseTracking(true);                 //鼠标移动捕捉
 }
 
 void Canvas::mousePressEvent(QMouseEvent *event)
@@ -258,7 +263,7 @@ void Canvas::setbgPixmap(QPixmap &px)
     fullPixmap=px;
 }
 
-void Canvas::shootScreen(QRectF &rect)
+void Canvas::shootScreen(QRectF &rect)      //截图函数
 {
     QScreen *screen = QGuiApplication::primaryScreen();
 
@@ -287,24 +292,40 @@ void Canvas::initToolBar()
     connect(btn_saveFile,SIGNAL(clicked(bool)),this,SLOT(slt_saveFile()));
 }
 
-void Canvas::addToolBar(int x,int y)
+void Canvas::addToolBar(int x,int y)            //显示工具条
 {
     toolbar->setGeometry(x,y,180,50);
     toolbar->setVisible(true);
 }
 
-void Canvas::deleteToolBar()
+void Canvas::deleteToolBar()                    //掩藏工具条
 {
     toolbar->setVisible(false);
 }
 
 void Canvas::slt_saveFile()
 {
+    QDateTime current_date_time = QDateTime::currentDateTime();
+    QString current_date = current_date_time.toString("yyyyMMdd_hhmmss");
+    QString savefile="ScreenShot_"+current_date+".jpg";
+
+    QString savepath=OperateSet::readSetting("Setting","QuickSaveDir",".").toString();
+
     QString fileName = QFileDialog::getSaveFileName(this,
             tr("Save File"),
-            ".",
+            savepath+"/"+savefile,
             tr("JPEG File (*.jpg)"));
     originalPixmap.save(fileName,"jpg");
+
+    QFileInfo fi = QFileInfo(fileName);
+    //QString file_name = fi.fileName();
+    QString file_path = fi.absolutePath();
+
+    if(file_path!=savepath)
+    {
+        OperateSet::writeSetting("Setting","QuickSaveDir",file_path);
+    }
+
 
     slt_cancel();
 }

@@ -20,13 +20,11 @@
 #include <QMenu>
 
 #include "canvas.h"
-#include "shotcut.h"
+#include "hotkeybar.h"
 
 #include <QAbstractNativeEventFilter>
 
 #include <windows.h>
-
-//#include"GlobalShotcut/MyWinEventFilter.h"
 
 namespace Ui {
 class ScreenShotTool;
@@ -43,7 +41,7 @@ public:
     void initTray();                //初始化托盘
     void ss_start();                //开始截图
 
-    void setShotCut();
+    void setHotKey();
 
     virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result);
 
@@ -52,7 +50,7 @@ public:
     bool  registerHotKey(Qt::Key key,Qt::KeyboardModifiers modifiers);
     bool  unregisterHotKey(Qt::Key key,Qt::KeyboardModifiers modifiers);
 
-
+    void setAutoRun(bool sta);
 
 private:
     Ui::ScreenShotTool *ui;
@@ -69,10 +67,13 @@ private:
     void closeEvent( QCloseEvent * event );     //重写退出
     bool closeFlag=false;
 
-    ShotCut *sc_set;
+    HotKeyBar *sc_set;
 
     Qt::Key key;
     Qt::KeyboardModifiers mods;
+    KeyString *keystring;
+
+    bool isAutoRun=false;
 
 signals:
     void appQuit();
@@ -85,7 +86,7 @@ private slots:
     void slt_aboutAction();
     void slt_exitAction();
 
-    void slt_changeShotCut(Qt::Key t_key,Qt::KeyboardModifiers t_mod);
+    void slt_changeHotKey(Qt::Key t_key, Qt::KeyboardModifiers t_mod);
 
     void slt_auto_run(int states);
 };
