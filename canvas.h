@@ -71,6 +71,8 @@ private:
 
     QClipboard *clipboard;
 
+    quint8 cursorCaptureFlag=0;
+
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);

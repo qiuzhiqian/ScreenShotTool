@@ -46,7 +46,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
             pointE.setY(event->y());
             rectFlag=1;
         }
-        else if(rectFlag==3)    //捕捉拖拽
+        else if(rectFlag==2)    //捕捉拖拽
         {
 
         }
@@ -70,87 +70,130 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             pointE.setY(event->y());
             //dragFlag=1;
         }
-        else
+        else if(rectFlag==2)            //拖拽
         {
+            switch(cursorCaptureFlag)
+            {
+            case 0:                                 //无效区域
+                setCursor(Qt::ArrowCursor);
+                break;
+            case 1:                                 //左上
+                setCursor(Qt::SizeFDiagCursor);
+                pointS.setX(event->x());
+                pointS.setY(event->y());
+                break;
+            case 2:                                 //左下
+                setCursor(Qt::SizeBDiagCursor);
+                pointS.setX(event->x());
+                pointE.setY(event->y());
+                break;
+            case 3:                                 //左边
+                setCursor(Qt::SizeHorCursor);
+                pointS.setX(event->x());
+                break;
 
+            case 4:                                 //右上
+                setCursor(Qt::SizeBDiagCursor);
+                pointE.setX(event->x());
+                pointS.setY(event->y());
+                break;
+            case 5:                                 //右下
+                setCursor(Qt::SizeFDiagCursor);
+                pointE.setX(event->x());
+                pointE.setY(event->y());
+                break;
+            case 6:                                 //右边
+                setCursor(Qt::SizeHorCursor);
+                pointE.setX(event->x());
+                break;
+            case 7:                                 //上边
+                setCursor(Qt::SizeVerCursor);
+                pointS.setY(event->y());
+                break;
+            case 8:                                 //下边
+                setCursor(Qt::SizeVerCursor);
+                pointE.setY(event->y());
+                break;
+            case 9:                                 //中央
+                setCursor(Qt::SizeAllCursor);
+                break;
+            }
+
+            addToolBar(shotArea.bottomLeft().x(),shotArea.bottomLeft().y());
         }
-
-
         update();
-
     }
     else if(event->buttons()==Qt::NoButton)      //没有按键按下
     {
 
-        if(rectFlag==3)    //捕捉拖拽
+        if(rectFlag==2)    //捕捉拖拽
         {
             int temp_x=event->x();
             int temp_y=event->y();
-            quint8 cursorPosFlag=0;
 
             if(qAbs(temp_x-shotArea.topLeft().x())<2)           //左
             {
                 if(qAbs(temp_y-shotArea.topLeft().y())<2)       //上
                 {
-                    cursorPosFlag=1;
+                    cursorCaptureFlag=1;
                 }
                 else if(qAbs(temp_y-shotArea.bottomRight().y())<2)   //下
                 {
-                    cursorPosFlag=2;
+                    cursorCaptureFlag=2;
                 }
                 else if( (temp_y>=shotArea.topLeft().y()+2) && (temp_y<=shotArea.bottomRight().y()-2) )  //上下之间
                 {
-                    cursorPosFlag=3;
+                    cursorCaptureFlag=3;
                 }
                 else
                 {
-                    cursorPosFlag=0;
+                    cursorCaptureFlag=0;
                 }
             }
             else if(qAbs(temp_x-shotArea.bottomRight().x())<2)          //右
             {
                 if(qAbs(temp_y-shotArea.topLeft().y())<2)       //上
                 {
-                    cursorPosFlag=4;
+                    cursorCaptureFlag=4;
                 }
                 else if(qAbs(temp_y-shotArea.bottomRight().y())<2)   //下
                 {
-                    cursorPosFlag=5;
+                    cursorCaptureFlag=5;
                 }
                 else if( (temp_y>=shotArea.topLeft().y()+2) && (temp_y<=shotArea.bottomRight().y()-2) )  //上下之间
                 {
-                    cursorPosFlag=6;
+                    cursorCaptureFlag=6;
                 }
                 else
                 {
-                    cursorPosFlag=0;
+                    cursorCaptureFlag=0;
                 }
             }
             else if((temp_x>=shotArea.topLeft().x()+2) && (temp_x<=shotArea.bottomRight().x()-2))          //左右之间
             {
                 if(qAbs(temp_y-shotArea.topLeft().y())<2)       //上
                 {
-                    cursorPosFlag=7;
+                    cursorCaptureFlag=7;
                 }
                 else if(qAbs(temp_y-shotArea.bottomRight().y())<2)   //下
                 {
-                    cursorPosFlag=8;
+                    cursorCaptureFlag=8;
                 }
                 else if( (temp_y>=shotArea.topLeft().y()+2) && (temp_y<=shotArea.bottomRight().y()-2) )  //上下之间
                 {
-                    cursorPosFlag=9;
+                    cursorCaptureFlag=9;
                 }
                 else
                 {
-                    cursorPosFlag=0;
+                    cursorCaptureFlag=0;
                 }
             }
             else
             {
-                cursorPosFlag=0;
+                cursorCaptureFlag=0;
             }
 
-            switch(cursorPosFlag)
+            switch(cursorCaptureFlag)
             {
             case 0:                                 //无效区域
                 setCursor(Qt::ArrowCursor);
@@ -200,6 +243,10 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
             rectFlag=2;         //矩形绘制完成
             addToolBar(shotArea.bottomLeft().x(),shotArea.bottomLeft().y());
         }
+        else if(rectFlag==2)
+        {
+            addToolBar(shotArea.bottomLeft().x(),shotArea.bottomLeft().y());
+        }
 
         update();
     }
@@ -207,7 +254,6 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
 
 void Canvas::paintEvent(QPaintEvent *e)
 {
-    shotArea=getRectF(pointS,pointE);
 
     QPainter painter(this);
 
@@ -225,6 +271,7 @@ void Canvas::paintEvent(QPaintEvent *e)
     }
     case 1:
     {
+        shotArea=getRectF(pointS,pointE);
         painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
         //painter.setBrush(Qt::white);
         painter.drawRect(shotArea);            //然后绘制矩形框
@@ -233,21 +280,18 @@ void Canvas::paintEvent(QPaintEvent *e)
     }
     case 2:
     {
+        shotArea=getRectF(pointS,pointE);
+        pointS.setX(shotArea.topLeft().x());        //坐标标准化
+        pointS.setY(shotArea.topLeft().y());
+        pointE.setX(shotArea.bottomRight().x());
+        pointE.setY(shotArea.bottomRight().y());
         painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
         //painter.setBrush(Qt::white);
         painter.drawRect(shotArea);            //然后绘制矩形框
         painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
-        shootScreen(shotArea);
 
-        rectFlag=3;
-        break;
-    }
-    case 3:
-    {
-        painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
-        //painter.setBrush(Qt::white);
-        painter.drawRect(shotArea);            //然后绘制矩形框
-        painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
+
+        //rectFlag=3;
         break;
     }
     default:
@@ -305,6 +349,7 @@ void Canvas::deleteToolBar()                    //掩藏工具条
 
 void Canvas::slt_saveFile()
 {
+    shootScreen(shotArea);
     QDateTime current_date_time = QDateTime::currentDateTime();
     QString current_date = current_date_time.toString("yyyyMMdd_hhmmss");
     QString savefile="ScreenShot_"+current_date+".jpg";
@@ -332,6 +377,7 @@ void Canvas::slt_saveFile()
 
 void Canvas::slt_saveClipboard()
 {
+    shootScreen(shotArea);
     clipboard->setPixmap(originalPixmap);
     slt_cancel();
 }
