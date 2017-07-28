@@ -6,84 +6,81 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>248</width>
-    <height>152</height>
+    <width>297</width>
+    <height>184</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>ScreenShotTool</string>
   </property>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>9</y>
-     <width>231</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>全局快捷键</string>
-   </property>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>25</y>
-      <width>54</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>截图</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>80</y>
-     <width>231</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>设置项</string>
-   </property>
-   <widget class="QCheckBox" name="checkBox">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>30</y>
-      <width>21</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="checked">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>54</width>
-      <height>12</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>开机启动</string>
-    </property>
-   </widget>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Global HotKey</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>ShotCut Key</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Setting</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Run on system startup</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="checkBox">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Language</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="comboBox">
+        <item>
+         <property name="text">
+          <string notr="true">English</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string notr="true">中文</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

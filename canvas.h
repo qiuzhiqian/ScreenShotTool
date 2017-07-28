@@ -39,8 +39,8 @@ public:
     void shootScreen(QRectF &rect);
 
     void initToolBar();
-    void addToolBar(int x=0, int y=0);
-    void deleteToolBar();
+    void showToolBar();
+    void hideToolBar();
 
     QRectF getRectF(QPointF p1,QPointF p2);    //通过两个坐标点生成矩形
 
@@ -58,6 +58,8 @@ private:
     QPointF pointS;     //鼠标绘制起点
     QPointF pointE;     //鼠标绘制终点
     QRectF shotArea;    //截图区域
+
+    QPointF pointDrag;  //拖拽点
 
     quint8 rectFlag=0;
 

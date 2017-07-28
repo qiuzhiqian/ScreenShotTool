@@ -52,6 +52,9 @@ public:
 
     void setAutoRun(bool sta);
 
+    void changeLanguage(QString lan);
+    void reFrash();
+
 private:
     Ui::ScreenShotTool *ui;
 
@@ -89,6 +92,7 @@ private slots:
     void slt_changeHotKey(Qt::Key t_key, Qt::KeyboardModifiers t_mod);
 
     void slt_auto_run(int states);
+    void slt_language_set(int index);
 };
 
 #endif // SCREENSHOTTOOL_H

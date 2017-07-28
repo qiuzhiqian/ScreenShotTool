@@ -6,6 +6,8 @@
 
 #include "operateSet.h"
 
+#include <QTranslator>
+
 
 /*
  * Author:qiuzhiqian
@@ -54,31 +56,34 @@ ScreenShotTool::ScreenShotTool(QWidget *parent) :
     setParent(xparent);
 
     this->setWindowFlags(Qt::Dialog|Qt::WindowCloseButtonHint|Qt::WindowStaysOnTopHint);
-    this->setWindowTitle(tr("设置"));
-    this->setWindowIcon(QIcon(":/ss.png"));
+    this->setWindowTitle(tr("Setting"));
+    this->setWindowIcon(QIcon(":/ss.ico"));
 
     keystring=new KeyString();
 
-    sc_set=new HotKeyBar(ui->groupBox);
-    sc_set->setKeyString(keystring);
+    sc_set=new HotKeyBar();
+    sc_set->setKeyString(keystring);                //传递keystring指针
     sc_set->setReadOnly(true);
-    sc_set->setGeometry(90,25,113,20);
+    ui->gridLayout->addWidget(sc_set,0,1);
     connect(sc_set,SIGNAL(sgn_hotKeyChanged(Qt::Key,Qt::KeyboardModifiers)),this,SLOT(slt_changeHotKey(Qt::Key,Qt::KeyboardModifiers)));
     connect(ui->checkBox,SIGNAL(stateChanged(int)),this,SLOT(slt_auto_run(int)));
+    connect(ui->comboBox,SIGNAL(currentIndexChanged(int)),this,SLOT(slt_language_set(int)));
 
-    this->setFixedSize(this->size());
     initTray();                             //托盘显示
 
-    const QString temp_str="CTRL+F3";
-    QString keystr=OperateSet::readSetting("HotKey","ScreenShot",temp_str).toString();
+    QString keystr=OperateSet::readSetting("HotKey","ScreenShot","CTRL+F1").toString();
     keystring->String2Key(keystr,key,mods);
     sc_set->setHotKey(key,mods);
     setHotKey();
 
     isAutoRun=bool(OperateSet::readSetting("Setting","AutoRun",0).toInt());
-    qDebug()<<isAutoRun;
     ui->checkBox->setChecked(isAutoRun);
     setAutoRun(isAutoRun);
+
+    QString language=OperateSet::readSetting("Setting","Language","en").toString();
+    changeLanguage(language);
+
+    this->setFixedSize(this->size());
 }
 
 ScreenShotTool::~ScreenShotTool()
@@ -100,12 +105,12 @@ void ScreenShotTool::ss_start()             //开始截屏
 void ScreenShotTool::initTray()             //初始化托盘
 {
     m_systemTray = new QSystemTrayIcon(this);
-    m_systemTray->setIcon(QIcon(":/ss.png"));
+    m_systemTray->setIcon(QIcon(":/ss.ico"));
     m_systemTray->setToolTip("ScreenShot");
 
-    setAction=new QAction(tr("设置"),this);
-    aboutAction=new QAction(tr("关于"),this);
-    exitAction=new QAction(tr("退出"),this);
+    setAction=new QAction(tr("Setting"),this);
+    aboutAction=new QAction(tr("About"),this);
+    exitAction=new QAction(tr("Quit"),this);
 
     QMenu *trayMenu=new QMenu(this);
     trayMenu->addAction(setAction);
@@ -361,7 +366,6 @@ bool  ScreenShotTool::registerHotKey(Qt::Key key,Qt::KeyboardModifiers modifiers
 {
     const quint32 nativeKey = nativeKeycode(key);
     const quint32 nativeMods = nativeModifiers(modifiers);
-    qDebug("nativeKey=%d,nativeMods=%d",nativeKey,nativeMods);
     return RegisterHotKey(0, nativeMods ^ nativeKey, nativeMods, nativeKey);
 }
 bool  ScreenShotTool::unregisterHotKey(Qt::Key key,Qt::KeyboardModifiers modifiers)     //注销快捷键
@@ -371,7 +375,6 @@ bool  ScreenShotTool::unregisterHotKey(Qt::Key key,Qt::KeyboardModifiers modifie
 
 void ScreenShotTool::slt_changeHotKey(Qt::Key t_key, Qt::KeyboardModifiers t_mod)      //快捷键修改
 {
-    qDebug("change shotcut");
     unregisterHotKey(key,mods);
     key=t_key;
     mods=t_mod;
@@ -386,13 +389,11 @@ void ScreenShotTool::slt_auto_run(int states)
 {
     if(states == Qt::Checked)
     {
-        qDebug("开机自启");
         isAutoRun=true;
         OperateSet::writeSetting("Setting","AutoRun",1);
     }
     else
     {
-        qDebug("关闭开机自启");
         isAutoRun=false;
         OperateSet::writeSetting("Setting","AutoRun",0);
     }
@@ -400,15 +401,59 @@ void ScreenShotTool::slt_auto_run(int states)
     setAutoRun(isAutoRun);
 }
 
+void ScreenShotTool::slt_language_set(int index)
+{
+    if(index==0)        //en
+    {
+        changeLanguage("en");
+    }
+    else if(index==1)   //zh_cn
+    {
+        changeLanguage("zh_cn");
+    }
+}
+
 void ScreenShotTool::setAutoRun(bool sta)
 {
     QSettings *reg=new QSettings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
     if(sta == true)
     {
-        //reg->setValue("app",QApplication::applicationFilePath());
+        reg->setValue("app",QApplication::applicationFilePath());
     }
     else
     {
-        //reg->setValue("app","");
+        reg->setValue("app","");
     }
+}
+
+void ScreenShotTool::changeLanguage(QString lan)
+{
+    QTranslator translator;
+    bool sta=false;
+
+    if(lan=="zh_cn")    //简体中文
+    {
+        sta=translator.load("zh_cn.qm");
+        OperateSet::writeSetting("Setting","Language","zh_cn");
+    }
+    else if(lan=="en")
+    {
+        sta=translator.load("en.qm");
+        OperateSet::writeSetting("Setting","Language","en");
+    }
+
+    if(sta)
+    {
+        QApplication::installTranslator(&translator);
+        ui->retranslateUi(this);        //刷新ui语言翻译
+        reFrash();                      //刷新自定义语言翻译
+    }
+}
+
+void ScreenShotTool::reFrash()
+{
+    this->setWindowTitle(tr("Setting"));
+    setAction->setText(tr("Setting"));
+    aboutAction->setText(tr("About"));
+    exitAction->setText(tr("Quit"));
 }

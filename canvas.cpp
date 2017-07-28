@@ -48,20 +48,39 @@ void Canvas::mousePressEvent(QMouseEvent *event)
         }
         else if(rectFlag==2)    //捕捉拖拽
         {
-
+            pointDrag.setX(event->x());
+            pointDrag.setY(event->y());
         }
         //update();
         //dragFlag=0;
     }
-    else if(event->button()==Qt::RightButton)
+    else if(event->button()==Qt::RightButton)       //重新绘制区域
     {
-        slt_cancel();
+        setCursor(Qt::ArrowCursor);
+
+        if(rectFlag>0)
+        {
+            pointS.rx()=0;
+            pointS.ry()=0;
+            pointE.rx()=0;
+            pointE.ry()=0;
+            pointDrag.rx()=0;
+            pointDrag.ry()=0;
+            rectFlag=0;
+
+            hideToolBar();
+
+            update();
+        }
+        else
+        {
+            slt_cancel();
+        }
     }
 }
 
 void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
-    //qDebug("x=%d,y=%d",event->x(),event->y());
     if(event->buttons()&Qt::LeftButton)
     {
         if(rectFlag==1)
@@ -116,10 +135,27 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                 break;
             case 9:                                 //中央
                 setCursor(Qt::SizeAllCursor);
+                qreal dx=event->x()-pointDrag.x();          //获取坐标差
+                qreal dy=event->y()-pointDrag.y();
+
+                pointDrag.setX(event->x());                 //刷新拖拽点坐标
+                pointDrag.setY(event->y());
+
+                if( (pointS.x()+dx)>0 && (pointE.x()+dx)<screen_width )
+                {
+                    pointS.rx()+=dx;
+                    pointE.rx()+=dx;
+                }
+
+                if( (pointS.y()+dy)>0 && (pointE.y()+dy)<screen_height )
+                {
+                    pointS.ry()+=dy;
+                    pointE.ry()+=dy;
+                }
                 break;
             }
 
-            addToolBar(shotArea.bottomLeft().x(),shotArea.bottomLeft().y());
+            showToolBar();        //实时更新工具条位置
         }
         update();
     }
@@ -241,11 +277,11 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
             pointE.setX(event->x());
             pointE.setY(event->y());
             rectFlag=2;         //矩形绘制完成
-            addToolBar(shotArea.bottomLeft().x(),shotArea.bottomLeft().y());
+            showToolBar();
         }
         else if(rectFlag==2)
         {
-            addToolBar(shotArea.bottomLeft().x(),shotArea.bottomLeft().y());
+            showToolBar();
         }
 
         update();
@@ -320,13 +356,14 @@ void Canvas::initToolBar()
     toolbar=new QWidget(this);
     QHBoxLayout *toolLayout=new QHBoxLayout();
 
-    btn_cancel=new QPushButton(tr("取消"));
-    btn_saveClipboard=new QPushButton(tr("复制"));
-    btn_saveFile=new QPushButton(tr("保存"));
+    btn_cancel=new QPushButton(tr("Quit"));
+    btn_saveClipboard=new QPushButton(tr("Copy"));
+    btn_saveFile=new QPushButton(tr("Save"));
 
     toolLayout->addWidget(btn_cancel);
     toolLayout->addWidget(btn_saveClipboard);
     toolLayout->addWidget(btn_saveFile);
+    toolLayout->setContentsMargins(0,0,0,0);            //去除边框间隙
 
     toolbar->setLayout(toolLayout);
     toolbar->setVisible(false);
@@ -336,13 +373,40 @@ void Canvas::initToolBar()
     connect(btn_saveFile,SIGNAL(clicked(bool)),this,SLOT(slt_saveFile()));
 }
 
-void Canvas::addToolBar(int x,int y)            //显示工具条
+void Canvas::showToolBar()            //显示工具条
 {
-    toolbar->setGeometry(x,y,180,50);
+    qreal x,y;
+
+    if(shotArea.bottomLeft().x()+185<screen_width)      //x轴方向边距足够
+    {
+        x=shotArea.bottomLeft().x()+5;
+    }
+    else                                                //x轴方向边距不足
+    {
+        x=screen_width-185;
+    }
+
+    if(screen_height-shotArea.bottomLeft().y()>35)      //下边距充足
+    {
+        y=shotArea.bottomLeft().y()+5;
+    }
+    else if(shotArea.topLeft().y()>35)                  //上边距充足
+    {
+        y=shotArea.topLeft().y()-35;
+    }
+    else if(shotArea.topLeft().y()<0)                   //上下边距都不够,且上边距在桌面外
+    {
+        y=5;
+    }
+    else                                                //上下边距都不够,且上边距在桌面内
+    {
+        y=shotArea.topLeft().y()+5;
+    }
+    toolbar->setGeometry(x,y,180,30);
     toolbar->setVisible(true);
 }
 
-void Canvas::deleteToolBar()                    //掩藏工具条
+void Canvas::hideToolBar()                    //掩藏工具条
 {
     toolbar->setVisible(false);
 }

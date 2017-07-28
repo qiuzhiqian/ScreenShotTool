@@ -42,3 +42,8 @@ FORMS += \
 
 RESOURCES += \
     screenshottool.qrc
+
+RC_ICONS = ss.ico
+
+TRANSLATIONS += zh_cn.ts \
+                en.ts
