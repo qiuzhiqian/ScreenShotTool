@@ -88,4 +88,15 @@ originalPixmap = screen->grabWindow(0,30,50,(240-30),(350-50));
 9、退出  
 
 # 使用
+使用很简单，无需过多介绍，展示一些示意图  
+英文界面
 
+![英文界面](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/1.jpg)
+
+中文界面
+
+![中文界面](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/2.jpg)
+
+截图效果
+
+![截图效果](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/1.gif)
