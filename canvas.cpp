@@ -7,6 +7,7 @@
 #include <QDateTime>
 
 #include "operateSet.h"
+#include <QTranslator>
 
 /*
  * Author:qiuzhiqian
@@ -32,6 +33,14 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
     clipboard = QApplication::clipboard();   //获取系统剪贴板指针
 
     setMouseTracking(true);                 //鼠标移动捕捉
+
+//    QTranslator translator;
+//    bool sta=translator.load("zh_cn.qm");
+//    QApplication::installTranslator(&translator);
+
+//    refrashToolBar();
+
+//    qDebug()<<sta;
 }
 
 void Canvas::mousePressEvent(QMouseEvent *event)
@@ -411,6 +420,13 @@ void Canvas::hideToolBar()                    //掩藏工具条
     toolbar->setVisible(false);
 }
 
+void Canvas::refrashToolBar()
+{
+    btn_cancel->setText(tr("Quit"));
+    btn_saveClipboard->setText(tr("Copy"));
+    btn_saveFile->setText(tr("Save"));
+}
+
 void Canvas::slt_saveFile()
 {
     shootScreen(shotArea);
@@ -482,4 +498,25 @@ QRectF Canvas::getRectF(QPointF p1, QPointF p2)
     QPointF pe(x2,y2);
     QRectF rect(ps,pe);
     return rect;
+}
+
+void Canvas::changeLanguage(QString lan)
+{
+    QTranslator translator;
+    bool sta=false;
+
+    if(lan=="zh_cn")    //简体中文
+    {
+        sta=translator.load("zh_cn.qm");
+    }
+    else if(lan=="en")
+    {
+        sta=translator.load("en.qm");
+    }
+
+    if(sta)
+    {
+        QApplication::installTranslator(&translator);
+        refrashToolBar();                      //刷新自定义语言翻译
+    }
 }

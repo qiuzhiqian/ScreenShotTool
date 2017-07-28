@@ -41,8 +41,11 @@ public:
     void initToolBar();
     void showToolBar();
     void hideToolBar();
+    void refrashToolBar();
 
     QRectF getRectF(QPointF p1,QPointF p2);    //通过两个坐标点生成矩形
+
+    void changeLanguage(QString lan);
 
 signals:
 

@@ -4,27 +4,30 @@
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="canvas.cpp" line="359"/>
+        <location filename="canvas.cpp" line="368"/>
+        <location filename="canvas.cpp" line="425"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="360"/>
+        <location filename="canvas.cpp" line="369"/>
+        <location filename="canvas.cpp" line="426"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="361"/>
+        <location filename="canvas.cpp" line="370"/>
+        <location filename="canvas.cpp" line="427"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="424"/>
+        <location filename="canvas.cpp" line="440"/>
         <source>Save File</source>
         <translation>保存文件</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="426"/>
+        <location filename="canvas.cpp" line="442"/>
         <source>JPEG File (*.jpg)</source>
         <translation>JPEG文件 (*.jpg)</translation>
     </message>
@@ -49,9 +52,9 @@
     <message>
         <location filename="screenshottool.ui" line="36"/>
         <location filename="screenshottool.cpp" line="59"/>
-        <location filename="screenshottool.cpp" line="108"/>
-        <location filename="screenshottool.cpp" line="444"/>
-        <location filename="screenshottool.cpp" line="445"/>
+        <location filename="screenshottool.cpp" line="128"/>
+        <location filename="screenshottool.cpp" line="472"/>
+        <location filename="screenshottool.cpp" line="473"/>
         <source>Setting</source>
         <translation>设置</translation>
     </message>
@@ -74,14 +77,14 @@
         <translation type="vanished">中文</translation>
     </message>
     <message>
-        <location filename="screenshottool.cpp" line="109"/>
-        <location filename="screenshottool.cpp" line="446"/>
+        <location filename="screenshottool.cpp" line="129"/>
+        <location filename="screenshottool.cpp" line="474"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="screenshottool.cpp" line="110"/>
-        <location filename="screenshottool.cpp" line="447"/>
+        <location filename="screenshottool.cpp" line="130"/>
+        <location filename="screenshottool.cpp" line="475"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>

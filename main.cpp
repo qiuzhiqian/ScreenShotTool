@@ -21,9 +21,5 @@ int main(int argc, char *argv[])
 
     a.installNativeEventFilter(&w);             //注册windows全局事件，用来启用全局热键
 
-    QTranslator translator;
-    bool sta=translator.load("cn.qm");
-    a.installTranslator(&translator);
-
     return a.exec();
 }

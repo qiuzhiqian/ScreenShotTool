@@ -82,6 +82,14 @@ ScreenShotTool::ScreenShotTool(QWidget *parent) :
 
     QString language=OperateSet::readSetting("Setting","Language","en").toString();
     changeLanguage(language);
+    if(language=="en")
+    {
+        ui->comboBox->setCurrentIndex(0);
+    }
+    else
+    {
+        ui->comboBox->setCurrentIndex(1);
+    }
 
     this->setFixedSize(this->size());
 }
@@ -100,6 +108,15 @@ void ScreenShotTool::ss_start()             //开始截屏
     screenCanvas=new Canvas(0);     //创建画布
 
     screenCanvas->setbgPixmap(fullPixmap);  //传递全屏背景图片
+
+    if(ui->comboBox->currentIndex()==0)
+    {
+        screenCanvas->changeLanguage("en");
+    }
+    else if(ui->comboBox->currentIndex()==1)
+    {
+        screenCanvas->changeLanguage("zh_cn");
+    }
 }
 
 void ScreenShotTool::initTray()             //初始化托盘
@@ -415,14 +432,14 @@ void ScreenShotTool::slt_language_set(int index)
 
 void ScreenShotTool::setAutoRun(bool sta)
 {
-    QSettings *reg=new QSettings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
+    QSettings *reg=new QSettings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
     if(sta == true)
     {
-        reg->setValue("app",QApplication::applicationFilePath());
+        reg->setValue("ScreenShotTool",QApplication::applicationFilePath());
     }
     else
     {
-        reg->setValue("app","");
+        reg->remove("ScreenShotTool");
     }
 }
 
