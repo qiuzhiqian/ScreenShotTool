@@ -4,30 +4,48 @@
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="canvas.cpp" line="368"/>
-        <location filename="canvas.cpp" line="425"/>
+        <location filename="canvas.cpp" line="323"/>
+        <location filename="canvas.cpp" line="396"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="369"/>
-        <location filename="canvas.cpp" line="426"/>
+        <location filename="canvas.cpp" line="324"/>
+        <location filename="canvas.cpp" line="397"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="370"/>
-        <location filename="canvas.cpp" line="427"/>
+        <location filename="canvas.cpp" line="325"/>
+        <location filename="canvas.cpp" line="398"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="440"/>
+        <location filename="canvas.cpp" line="327"/>
+        <location filename="canvas.cpp" line="393"/>
+        <source>Line</source>
+        <translation>直线</translation>
+    </message>
+    <message>
+        <location filename="canvas.cpp" line="328"/>
+        <location filename="canvas.cpp" line="394"/>
+        <source>Rect</source>
+        <translation>矩形</translation>
+    </message>
+    <message>
+        <location filename="canvas.cpp" line="329"/>
+        <location filename="canvas.cpp" line="395"/>
+        <source>Ellipse</source>
+        <translation>椭圆</translation>
+    </message>
+    <message>
+        <location filename="canvas.cpp" line="447"/>
         <source>Save File</source>
         <translation>保存文件</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="442"/>
+        <location filename="canvas.cpp" line="449"/>
         <source>JPEG File (*.jpg)</source>
         <translation>JPEG文件 (*.jpg)</translation>
     </message>
