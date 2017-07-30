@@ -435,7 +435,7 @@ void ScreenShotTool::setAutoRun(bool sta)
     QSettings *reg=new QSettings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
     if(sta == true)
     {
-        reg->setValue("ScreenShotTool",QApplication::applicationFilePath());
+        reg->setValue("ScreenShotTool",QApplication::applicationFilePath().replace("/","\\"));
     }
     else
     {

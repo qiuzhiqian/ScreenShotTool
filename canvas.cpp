@@ -33,14 +33,6 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
     clipboard = QApplication::clipboard();   //获取系统剪贴板指针
 
     setMouseTracking(true);                 //鼠标移动捕捉
-
-//    QTranslator translator;
-//    bool sta=translator.load("zh_cn.qm");
-//    QApplication::installTranslator(&translator);
-
-//    refrashToolBar();
-
-//    qDebug()<<sta;
 }
 
 void Canvas::mousePressEvent(QMouseEvent *event)
@@ -360,7 +352,7 @@ void Canvas::shootScreen(QRectF &rect)      //截图函数
 
 }
 
-void Canvas::initToolBar()
+void Canvas::initToolBar()                  //工具条初始化
 {
     toolbar=new QWidget(this);
     QHBoxLayout *toolLayout=new QHBoxLayout();
@@ -369,10 +361,17 @@ void Canvas::initToolBar()
     btn_saveClipboard=new QPushButton(tr("Copy"));
     btn_saveFile=new QPushButton(tr("Save"));
 
+    btn_drawRect=new QPushButton(tr("Rect"));
+    btn_drawEllipse=new QPushButton(tr("Ellipse"));
+
+    toolLayout->addWidget(btn_drawRect);
+    toolLayout->addWidget(btn_drawEllipse);
+
     toolLayout->addWidget(btn_cancel);
     toolLayout->addWidget(btn_saveClipboard);
     toolLayout->addWidget(btn_saveFile);
     toolLayout->setContentsMargins(0,0,0,0);            //去除边框间隙
+    toolLayout->setSpacing(0);
 
     toolbar->setLayout(toolLayout);
     toolbar->setVisible(false);
@@ -386,32 +385,36 @@ void Canvas::showToolBar()            //显示工具条
 {
     qreal x,y;
 
-    if(shotArea.bottomLeft().x()+185<screen_width)      //x轴方向边距足够
+    int bar_width=toolbar->width();
+    int bar_height=toolbar->height();
+    int offset=5;
+
+    if(shotArea.bottomLeft().x()+bar_width+offset<screen_width)      //x轴方向边距足够
     {
-        x=shotArea.bottomLeft().x()+5;
+        x=shotArea.bottomLeft().x()+offset;
     }
     else                                                //x轴方向边距不足
     {
-        x=screen_width-185;
+        x=screen_width-(bar_width+offset);
     }
 
-    if(screen_height-shotArea.bottomLeft().y()>35)      //下边距充足
+    if(screen_height-shotArea.bottomLeft().y()>(bar_height+offset))      //下边距充足
     {
-        y=shotArea.bottomLeft().y()+5;
+        y=shotArea.bottomLeft().y()+offset;
     }
-    else if(shotArea.topLeft().y()>35)                  //上边距充足
+    else if(shotArea.topLeft().y()>(bar_height+offset))                  //上边距充足
     {
-        y=shotArea.topLeft().y()-35;
+        y=shotArea.topLeft().y()-(bar_height+offset);
     }
     else if(shotArea.topLeft().y()<0)                   //上下边距都不够,且上边距在桌面外
     {
-        y=5;
+        y=offset;
     }
     else                                                //上下边距都不够,且上边距在桌面内
     {
-        y=shotArea.topLeft().y()+5;
+        y=shotArea.topLeft().y()+offset;
     }
-    toolbar->setGeometry(x,y,180,30);
+    toolbar->move(x,y);
     toolbar->setVisible(true);
 }
 

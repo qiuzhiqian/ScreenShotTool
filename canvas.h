@@ -73,6 +73,8 @@ private:
     QPushButton *btn_saveFile;
     QPushButton *btn_saveClipboard;
     QPushButton *btn_cancel;
+    QPushButton *btn_drawRect;      //画矩形
+    QPushButton *btn_drawEllipse;   //画椭圆
 
     QClipboard *clipboard;
 
