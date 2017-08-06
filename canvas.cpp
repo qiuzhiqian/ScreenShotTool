@@ -35,6 +35,8 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
     setMouseTracking(true);                 //鼠标移动捕捉
 
     canvasInit();
+
+    drawEditFlag=0;
 }
 
 void Canvas::canvasInit()
@@ -45,7 +47,7 @@ void Canvas::canvasInit()
     pointE.ry()=0;
     pointDrag.rx()=0;
     pointDrag.ry()=0;
-    rectFlag=0;
+    rectFlag=DrawStatus::waitDraw;
 
     lineList.clear();
     rectList.clear();
@@ -58,36 +60,66 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 {
     if(event->button()==Qt::LeftButton)
     {
-        if(rectFlag==0)
+        if(rectFlag==DrawStatus::waitDraw)
         {
             pointS.rx()=event->x();
             pointS.ry()=event->y();
             pointE.rx()=event->x();
             pointE.ry()=event->y();
             shotArea=getRectF(pointS,pointE);
-            rectFlag=1;
+            rectFlag=DrawStatus::drawing;
         }
-        else if(rectFlag==2)    //捕捉拖拽
+        else if(rectFlag==DrawStatus::drawed)    //捕捉拖拽
         {
-            pointDrag.setX(event->x());
-            pointDrag.setY(event->y());
+            if(drawEditFlag==0)
+            {
+                pointDrag.setX(event->x());
+                pointDrag.setY(event->y());
+            }
+            else if(drawEditFlag==1)        //画线
+            {
+                pointS.rx()=event->x();
+                pointS.ry()=event->y();
+                pointE.rx()=event->x();
+                pointE.ry()=event->y();
+
+                QLine tempLine(pointS.toPoint(),pointE.toPoint());
+                lineList.append(tempLine);
+            }
+            else if(drawEditFlag==2)        //画矩形
+            {
+                pointS.rx()=event->x();
+                pointS.ry()=event->y();
+                pointE.rx()=event->x();
+                pointE.ry()=event->y();
+
+                QRectF tempRect=getRectF(pointS,pointE);
+                rectList.append(tempRect);
+            }
+            else if(drawEditFlag==3)        //画椭圆
+            {
+                pointS.rx()=event->x();
+                pointS.ry()=event->y();
+                pointE.rx()=event->x();
+                pointE.ry()=event->y();
+
+                QRectF tempRect=getRectF(pointS,pointE);
+                ellipseList.append(tempRect);
+            }
         }
-        //update();
-        //dragFlag=0;
     }
     else if(event->button()==Qt::RightButton)       //重新绘制区域
     {
         setCursor(Qt::ArrowCursor);
 
-        if(rectFlag>0)
+        if(rectFlag==DrawStatus::waitDraw)
         {
-            canvasInit();
-
-            update();
+            slt_cancel();
         }
         else
         {
-            slt_cancel();
+            canvasInit();
+            update();
         }
     }
 }
@@ -96,14 +128,19 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
     if(event->buttons()&Qt::LeftButton)
     {
-        if(rectFlag==1)
+        if(rectFlag==DrawStatus::drawing)
         {
             pointE.setX(event->x());
             pointE.setY(event->y());
             shotArea=getRectF(pointS,pointE);
         }
-        else if(rectFlag==2)            //拖拽
+        else if(rectFlag==DrawStatus::drawed)            //拖拽
         {
+            QPointF tempTL,tempBR;
+
+            tempTL=shotArea.topLeft();
+            tempBR=shotArea.bottomRight();
+
             switch(cursorCaptureFlag)
             {
             case 0:                                 //无效区域
@@ -111,71 +148,109 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                 break;
             case 1:                                 //左上
                 setCursor(Qt::SizeFDiagCursor);
-                pointS.setX(event->x());
-                pointS.setY(event->y());
-                shotArea=getRectF(pointS,pointE);
+                tempTL.setX(event->x());
+                tempTL.setY(event->y());
                 break;
             case 2:                                 //左下
                 setCursor(Qt::SizeBDiagCursor);
-                pointS.setX(event->x());
-                pointE.setY(event->y());
-                shotArea=getRectF(pointS,pointE);
+                tempTL.setX(event->x());
+                tempBR.setY(event->y());
                 break;
             case 3:                                 //左边
                 setCursor(Qt::SizeHorCursor);
-                pointS.setX(event->x());
-                shotArea=getRectF(pointS,pointE);
+                tempTL.setX(event->x());
                 break;
 
             case 4:                                 //右上
                 setCursor(Qt::SizeBDiagCursor);
-                pointE.setX(event->x());
-                pointS.setY(event->y());
-                shotArea=getRectF(pointS,pointE);
+                tempBR.setX(event->x());
+                tempTL.setY(event->y());
                 break;
             case 5:                                 //右下
                 setCursor(Qt::SizeFDiagCursor);
-                pointE.setX(event->x());
-                pointE.setY(event->y());
-                shotArea=getRectF(pointS,pointE);
+                tempBR.setX(event->x());
+                tempBR.setY(event->y());
                 break;
             case 6:                                 //右边
                 setCursor(Qt::SizeHorCursor);
-                pointE.setX(event->x());
+                tempBR.setX(event->x());
                 shotArea=getRectF(pointS,pointE);
                 break;
             case 7:                                 //上边
                 setCursor(Qt::SizeVerCursor);
-                pointS.setY(event->y());
-                shotArea=getRectF(pointS,pointE);
+                tempTL.setY(event->y());
                 break;
             case 8:                                 //下边
                 setCursor(Qt::SizeVerCursor);
-                pointE.setY(event->y());
-                shotArea=getRectF(pointS,pointE);
+                tempBR.setY(event->y());
                 break;
             case 9:                                 //中央
-                setCursor(Qt::SizeAllCursor);
-                qreal dx=event->x()-pointDrag.x();          //获取坐标差
-                qreal dy=event->y()-pointDrag.y();
-
-                pointDrag.setX(event->x());                 //刷新拖拽点坐标
-                pointDrag.setY(event->y());
-
-                if( (pointS.x()+dx)>0 && (pointE.x()+dx)<screen_width )
+                if(drawEditFlag==0)
                 {
-                    pointS.rx()+=dx;
-                    pointE.rx()+=dx;
+                    setCursor(Qt::SizeAllCursor);
+                    qreal dx=event->x()-pointDrag.x();          //获取坐标差
+                    qreal dy=event->y()-pointDrag.y();
+
+                    pointDrag.setX(event->x());                 //刷新拖拽点坐标
+                    pointDrag.setY(event->y());
+
+                    if( (tempTL.x()+dx)>0 && (tempBR.x()+dx)<screen_width )
+                    {
+                        tempTL.rx()+=dx;
+                        tempBR.rx()+=dx;
+                    }
+
+                    if( (tempTL.y()+dy)>0 && (tempBR.y()+dy)<screen_height )
+                    {
+                        tempTL.ry()+=dy;
+                        tempBR.ry()+=dy;
+                    }
+                }
+                else if(drawEditFlag==1)                //绘线
+                {
+                    pointE.setX(event->x());
+                    pointE.setY(event->y());
+
+                    QLine tempLine(pointS.toPoint(),pointE.toPoint());
+                    if( (tempLine.x1()==tempLine.x2())&&(tempLine.y1()==tempLine.y2()) )   //直线长度为0
+                    {
+                        lineList.removeLast();
+                        break;
+                    }
+                    lineList.replace(lineList.length()-1,tempLine);
+                }
+                else if(drawEditFlag==2)                //绘矩形
+                {
+                    pointE.setX(event->x());
+                    pointE.setY(event->y());
+
+                    QRectF tempRect=getRectF(pointS,pointE);
+                    if(tempRect.width()==0&&tempRect.height()==0)       //矩形区域为空
+                    {
+                        rectList.removeLast();
+                        break;
+                    }
+                    rectList.replace(rectList.length()-1,tempRect);
+                }
+                else if(drawEditFlag==3)                //绘椭圆
+                {
+                    pointE.setX(event->x());
+                    pointE.setY(event->y());
+
+                    QRectF tempRect=getRectF(pointS,pointE);
+                    if(tempRect.width()==0&&tempRect.height()==0)       //矩形区域为空
+                    {
+                        ellipseList.removeLast();
+                        break;
+                    }
+                    ellipseList.replace(ellipseList.length()-1,tempRect);
                 }
 
-                if( (pointS.y()+dy)>0 && (pointE.y()+dy)<screen_height )
-                {
-                    pointS.ry()+=dy;
-                    pointE.ry()+=dy;
-                }
-                shotArea=getRectF(pointS,pointE);
                 break;
             }
+
+            shotArea.setTopLeft(tempTL);
+            shotArea.setBottomRight(tempBR);
 
             showToolBar();        //实时更新工具条位置
         }
@@ -183,7 +258,7 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
     }
     else if(event->buttons()==Qt::NoButton)      //没有按键按下
     {
-        if(rectFlag==2)    //捕捉拖拽
+        if(rectFlag==DrawStatus::drawed)    //捕捉拖拽
         {
             cursorCaptureFlag=caputerRect(shotArea,event->x(),event->y());
 
@@ -224,7 +299,7 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                 }
                 else                                //追加图形
                 {
-
+                    setCursor(Qt::ArrowCursor);
                 }
                 break;
             }
@@ -237,17 +312,24 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
 {
     if(event->button()==Qt::LeftButton)
     {
-        if(rectFlag==1)
+        if(rectFlag==DrawStatus::drawing)
         {
             pointE.setX(event->x());
             pointE.setY(event->y());
             shotArea=getRectF(pointS,pointE);
-            rectFlag=2;         //矩形绘制完成
+            rectFlag=DrawStatus::drawed;         //矩形绘制完成
             showToolBar();
         }
-        else if(rectFlag==2)
+        else if(rectFlag==DrawStatus::drawed)
         {
-            showToolBar();
+            if(drawEditFlag==0)
+            {
+                showToolBar();
+            }
+            else
+            {
+
+            }
         }
 
         update();
@@ -267,11 +349,11 @@ void Canvas::paintEvent(QPaintEvent *e)
 
     switch(rectFlag)        //截图状态机
     {
-    case 0:
+    case DrawStatus::waitDraw:
     {
         break;
     }
-    case 1:
+    case DrawStatus::drawing:
     {
         painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
         //painter.setBrush(Qt::white);
@@ -279,19 +361,12 @@ void Canvas::paintEvent(QPaintEvent *e)
         painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
         break;
     }
-    case 2:
+    case DrawStatus::drawed:
     {
-        pointS.setX(shotArea.topLeft().x());        //坐标标准化
-        pointS.setY(shotArea.topLeft().y());
-        pointE.setX(shotArea.bottomRight().x());
-        pointE.setY(shotArea.bottomRight().y());
         painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
         //painter.setBrush(Qt::white);
         painter.drawRect(shotArea);            //然后绘制矩形框
         painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
-
-
-        //rectFlag=3;
         break;
     }
     default:
@@ -299,6 +374,37 @@ void Canvas::paintEvent(QPaintEvent *e)
         break;
     }
     }
+
+    quint16 len=lineList.length();
+    if(len)
+    {
+        painter.setPen(QPen(Qt::red,2,Qt::SolidLine));//设置画笔形式
+        for(quint16 i=0;i<len;i++)
+        {
+            painter.drawLine(lineList[i]);            //然后绘制矩形框
+        }
+    }
+
+    len=rectList.length();
+    if(len)
+    {
+        painter.setPen(QPen(Qt::red,2,Qt::SolidLine));//设置画笔形式
+        for(quint16 i=0;i<len;i++)
+        {
+            painter.drawRect(rectList[i]);            //然后绘制矩形框
+        }
+    }
+
+    len=ellipseList.length();
+    if(len)
+    {
+        painter.setPen(QPen(Qt::red,2,Qt::SolidLine));//设置画笔形式
+        for(quint16 i=0;i<len;i++)
+        {
+            painter.drawEllipse(ellipseList[i]);            //然后绘制矩形框
+        }
+    }
+
     QWidget::paintEvent(e);
 }
 
@@ -341,6 +447,13 @@ void Canvas::initToolBar()                  //工具条初始化
     toolbar->setLayout(toolLayout);
     toolbar->setVisible(false);
 
+    btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
+    btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
+    btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
+
+    connect(btn_drawLine,SIGNAL(clicked(bool)),this,SLOT(slt_drawLine()));
+    connect(btn_drawRect,SIGNAL(clicked(bool)),this,SLOT(slt_drawRect()));
+    connect(btn_drawEllipse,SIGNAL(clicked(bool)),this,SLOT(slt_drawEllipse()));
     connect(btn_cancel,SIGNAL(clicked(bool)),this,SLOT(slt_cancel()));
     connect(btn_saveClipboard,SIGNAL(clicked(bool)),this,SLOT(slt_saveClipboard()));
     connect(btn_saveFile,SIGNAL(clicked(bool)),this,SLOT(slt_saveFile()));
@@ -400,37 +513,55 @@ void Canvas::refrashToolBar()
 
 void Canvas::slt_drawLine()
 {
-    if(drawEditFlag==1)
+    if(drawEditFlag!=1)
     {
-        drawEditFlag=0;
+        drawEditFlag=1;
+        btn_drawLine->setStyleSheet("background-color: rgb(146, 189, 108);");
+        btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
+        btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
     }
     else
     {
-        drawEditFlag=1;
+        drawEditFlag=0;
+        btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
+        btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
+        btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
     }
 }
 
 void Canvas::slt_drawRect()
 {
-    if(drawEditFlag==2)
+    if(drawEditFlag!=2)
     {
-        drawEditFlag=0;
+        drawEditFlag=2;
+        btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
+        btn_drawRect->setStyleSheet("background-color: rgb(146, 189, 108);");
+        btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
     }
     else
     {
-        drawEditFlag=2;
+        drawEditFlag=0;
+        btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
+        btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
+        btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
     }
 }
 
 void Canvas::slt_drawEllipse()
 {
-    if(drawEditFlag==3)
+    if(drawEditFlag!=3)
     {
-        drawEditFlag=0;
+        drawEditFlag=3;
+        btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
+        btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
+        btn_drawEllipse->setStyleSheet("background-color: rgb(146, 189, 108);");
     }
     else
     {
-        drawEditFlag=3;
+        drawEditFlag=0;
+        btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
+        btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
+        btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
     }
 }
 
@@ -471,7 +602,7 @@ void Canvas::slt_saveClipboard()
 
 void Canvas::slt_cancel()
 {
-    rectFlag=0;
+    rectFlag=DrawStatus::waitDraw;
     this->close();
 }
 

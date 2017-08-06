@@ -28,6 +28,12 @@
 #include <QHBoxLayout>
 #include <QClipboard>
 
+enum DrawStatus {
+    waitDraw=0,
+    drawing,
+    drawed,
+};
+
 
 class Canvas : public QWidget
 {
@@ -75,7 +81,7 @@ private:
 
     QPointF pointDrag;              //拖拽点
 
-    quint8 rectFlag=0;
+    DrawStatus rectFlag=DrawStatus::waitDraw;
     quint8 drawEditFlag=0;          //绘图修改
 
     QPixmap fullPixmap;         //原始全屏图片
