@@ -28,6 +28,8 @@
 #include <QHBoxLayout>
 #include <QClipboard>
 
+#include <QComboBox>
+
 enum DrawStatus {
     waitDraw=0,
     drawing,
@@ -50,6 +52,14 @@ public:
     void showToolBar();
     void hideToolBar();
     void refrashToolBar();
+
+    //void initShapeToolBar();
+    //void showShapeToolBar();
+    //void hideShapeToolBar();
+
+    //void initShapeToolBar();
+    //void showShapeToolBar();
+    //void hideShapeToolBar();
 
     quint8 caputerRect(QRectF t_rect,qreal t_x,qreal t_y);
 
@@ -94,6 +104,14 @@ private:
     QPushButton *btn_drawLine;      //画直线
     QPushButton *btn_drawRect;      //画矩形
     QPushButton *btn_drawEllipse;   //画椭圆
+
+    QPen drawPen;                   //线宽颜色风格
+    QWidget *shapeToolBar;
+    QWidget *textToolBar;
+
+    QComboBox *cbx_lineSize;
+    QPushButton *btn_colorSelect;
+    QComboBox *lineStyle;
 
     QClipboard *clipboard;
 

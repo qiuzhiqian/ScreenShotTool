@@ -424,7 +424,9 @@ void Canvas::shootScreen(QRectF &rect)      //截图函数
 void Canvas::initToolBar()                  //工具条初始化
 {
     toolbar=new QWidget(this);
-    QHBoxLayout *toolLayout=new QHBoxLayout();
+
+    QWidget *MainToolBar=new QWidget();                    //主工具栏
+    QHBoxLayout *mainToolLayout=new QHBoxLayout();
 
     btn_cancel=new QPushButton(tr("Quit"));
     btn_saveClipboard=new QPushButton(tr("Copy"));
@@ -434,16 +436,49 @@ void Canvas::initToolBar()                  //工具条初始化
     btn_drawRect=new QPushButton(tr("Rect"));
     btn_drawEllipse=new QPushButton(tr("Ellipse"));
 
-    toolLayout->addWidget(btn_drawLine);
-    toolLayout->addWidget(btn_drawRect);
-    toolLayout->addWidget(btn_drawEllipse);
+    mainToolLayout->addWidget(btn_drawLine);
+    mainToolLayout->addWidget(btn_drawRect);
+    mainToolLayout->addWidget(btn_drawEllipse);
+    mainToolLayout->addWidget(btn_cancel);
+    mainToolLayout->addWidget(btn_saveClipboard);
+    mainToolLayout->addWidget(btn_saveFile);
+    mainToolLayout->setContentsMargins(0,0,0,0);            //去除边框间隙
+    mainToolLayout->setSpacing(0);
+    MainToolBar->setLayout(mainToolLayout);
 
-    toolLayout->addWidget(btn_cancel);
-    toolLayout->addWidget(btn_saveClipboard);
-    toolLayout->addWidget(btn_saveFile);
+    shapeToolBar=new QWidget();                             //拓展工具条
+    QHBoxLayout *shapeToolLayout=new QHBoxLayout();
+
+    cbx_lineSize=new QComboBox();
+    btn_colorSelect=new QPushButton();
+    lineStyle=new QComboBox();
+
+    QStringList sizeitems;
+    sizeitems<<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7"<<"8"<<"9"<<"10"<<"11"<<"12"<<"13"<<"14"<<"15"<<"16"<<"17"<<"18"<<"19"<<"20";
+    cbx_lineSize->addItems(sizeitems);
+    btn_colorSelect->setStyleSheet("background-color: rgb(255, 0, 0);");
+
+    lineStyle->addItem(QIcon(":/pic/1.ico"),"");
+    lineStyle->addItem(QIcon(":/pic/2.ico"),"");
+    lineStyle->addItem(QIcon(":/pic/3.ico"),"");
+    lineStyle->addItem(QIcon(":/pic/4.ico"),"");
+    lineStyle->addItem(QIcon(":/pic/5.ico"),"");
+    lineStyle->setIconSize(QSize(80,20));
+    shapeToolLayout->addWidget(cbx_lineSize);
+    shapeToolLayout->addWidget(btn_colorSelect);
+    shapeToolLayout->addWidget(lineStyle);
+    shapeToolLayout->addStretch();
+    shapeToolLayout->setContentsMargins(0,0,0,0);            //去除边框间隙
+    shapeToolLayout->setSpacing(0);
+    shapeToolBar->setLayout(shapeToolLayout);
+    shapeToolBar->setVisible(false);
+
+
+    QVBoxLayout *toolLayout=new QVBoxLayout();
+    toolLayout->addWidget(MainToolBar);
+    toolLayout->addWidget(shapeToolBar);
     toolLayout->setContentsMargins(0,0,0,0);            //去除边框间隙
     toolLayout->setSpacing(0);
-
     toolbar->setLayout(toolLayout);
     toolbar->setVisible(false);
 
@@ -519,6 +554,9 @@ void Canvas::slt_drawLine()
         btn_drawLine->setStyleSheet("background-color: rgb(146, 189, 108);");
         btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
         btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
+        shapeToolBar->setVisible(true);
+        toolbar->adjustSize();
+        showToolBar();
     }
     else
     {
@@ -526,6 +564,9 @@ void Canvas::slt_drawLine()
         btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
         btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
         btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
+        shapeToolBar->setVisible(false);
+        toolbar->adjustSize();
+        showToolBar();
     }
 }
 
@@ -537,6 +578,9 @@ void Canvas::slt_drawRect()
         btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
         btn_drawRect->setStyleSheet("background-color: rgb(146, 189, 108);");
         btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
+        shapeToolBar->setVisible(true);
+        toolbar->adjustSize();
+        showToolBar();
     }
     else
     {
@@ -544,6 +588,9 @@ void Canvas::slt_drawRect()
         btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
         btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
         btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
+        shapeToolBar->setVisible(false);
+        toolbar->adjustSize();
+        showToolBar();
     }
 }
 
@@ -555,6 +602,9 @@ void Canvas::slt_drawEllipse()
         btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
         btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
         btn_drawEllipse->setStyleSheet("background-color: rgb(146, 189, 108);");
+        shapeToolBar->setVisible(true);
+        toolbar->adjustSize();
+        showToolBar();
     }
     else
     {
@@ -562,6 +612,9 @@ void Canvas::slt_drawEllipse()
         btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
         btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
         btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
+        shapeToolBar->setVisible(false);
+        toolbar->adjustSize();
+        showToolBar();
     }
 }
 
