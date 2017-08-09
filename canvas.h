@@ -30,6 +30,11 @@
 
 #include <QComboBox>
 
+#include <QColorDialog>
+
+#include "linepaint.h"
+#include "rectpaint.h"
+
 enum DrawStatus {
     waitDraw=0,
     drawing,
@@ -63,7 +68,7 @@ public:
 
     quint8 caputerRect(QRectF t_rect,qreal t_x,qreal t_y);
 
-    QRectF getRectF(QPointF p1,QPointF p2);    //通过两个坐标点生成矩形
+    RectPaint getRectF(QPointF p1,QPointF p2);    //通过两个坐标点生成矩形
 
     void changeLanguage(QString lan);
 
@@ -77,17 +82,21 @@ public slots:
     void slt_saveClipboard();       //保存到剪切板
     void slt_cancel();
 
+    void slt_changePenWidth(QString s);
+    void slt_changePenColor();
+    void slt_changePenStyle(int index);
+
 private:
     int screen_width=0,screen_height=0;
     quint8 okFlag=0;
 
     QPointF pointS;     //鼠标绘制起点
     QPointF pointE;     //鼠标绘制终点
-    QRectF shotArea;    //截图区域
+    RectPaint shotArea;    //截图区域
 
-    QList<QLineF> lineList;         //直线列表
-    QList<QRectF> rectList;         //矩形列表
-    QList<QRectF> ellipseList;      //椭圆列表
+    QList<LinePaint> lineList;         //直线列表
+    QList<RectPaint> rectList;         //矩形列表
+    QList<RectPaint> ellipseList;      //椭圆列表
 
     QPointF pointDrag;              //拖拽点
 
@@ -111,7 +120,7 @@ private:
 
     QComboBox *cbx_lineSize;
     QPushButton *btn_colorSelect;
-    QComboBox *lineStyle;
+    QComboBox *cbx_lineStyle;
 
     QClipboard *clipboard;
 

@@ -25,16 +25,17 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
     screen_width=screenGeometry.width();
     screen_height=screenGeometry.height();
 
-    this->setWindowFlags(Qt::WindowStaysOnTopHint);     //窗口置顶
+    //this->setWindowFlags(Qt::WindowStaysOnTopHint);     //窗口置顶
+    this->raise();                      //软置顶
     this->showFullScreen();             //画布全屏显示
-
-    initToolBar();
 
     clipboard = QApplication::clipboard();   //获取系统剪贴板指针
 
     setMouseTracking(true);                 //鼠标移动捕捉
 
     canvasInit();
+
+    initToolBar();
 
     drawEditFlag=0;
 }
@@ -53,7 +54,9 @@ void Canvas::canvasInit()
     rectList.clear();
     ellipseList.clear();
 
-    hideToolBar();
+    drawPen.setBrush(Qt::red);
+    drawPen.setWidthF(2);
+    drawPen.setStyle(Qt::SolidLine);
 }
 
 void Canvas::mousePressEvent(QMouseEvent *event)
@@ -83,7 +86,9 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 pointE.rx()=event->x();
                 pointE.ry()=event->y();
 
-                QLine tempLine(pointS.toPoint(),pointE.toPoint());
+                LinePaint tempLine(pointS.toPoint(),pointE.toPoint());
+                //qDebug()<<"drawPen";
+                tempLine.setPen(drawPen);
                 lineList.append(tempLine);
             }
             else if(drawEditFlag==2)        //画矩形
@@ -93,7 +98,8 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 pointE.rx()=event->x();
                 pointE.ry()=event->y();
 
-                QRectF tempRect=getRectF(pointS,pointE);
+                RectPaint tempRect=getRectF(pointS,pointE);
+                tempRect.setPen(drawPen);
                 rectList.append(tempRect);
             }
             else if(drawEditFlag==3)        //画椭圆
@@ -103,7 +109,8 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 pointE.rx()=event->x();
                 pointE.ry()=event->y();
 
-                QRectF tempRect=getRectF(pointS,pointE);
+                RectPaint tempRect=getRectF(pointS,pointE);
+                tempRect.setPen(drawPen);
                 ellipseList.append(tempRect);
             }
         }
@@ -119,6 +126,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
         else
         {
             canvasInit();
+            hideToolBar();
             update();
         }
     }
@@ -211,39 +219,23 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                     pointE.setX(event->x());
                     pointE.setY(event->y());
 
-                    QLine tempLine(pointS.toPoint(),pointE.toPoint());
-                    if( (tempLine.x1()==tempLine.x2())&&(tempLine.y1()==tempLine.y2()) )   //直线长度为0
-                    {
-                        lineList.removeLast();
-                        break;
-                    }
-                    lineList.replace(lineList.length()-1,tempLine);
+                    lineList.last().setPoints(pointS.toPoint(),pointE.toPoint());
                 }
                 else if(drawEditFlag==2)                //绘矩形
                 {
                     pointE.setX(event->x());
                     pointE.setY(event->y());
 
-                    QRectF tempRect=getRectF(pointS,pointE);
-                    if(tempRect.width()==0&&tempRect.height()==0)       //矩形区域为空
-                    {
-                        rectList.removeLast();
-                        break;
-                    }
-                    rectList.replace(rectList.length()-1,tempRect);
+                    rectList.last().setTopLeft(pointS);
+                    rectList.last().setBottomRight(pointE);
                 }
                 else if(drawEditFlag==3)                //绘椭圆
                 {
                     pointE.setX(event->x());
                     pointE.setY(event->y());
 
-                    QRectF tempRect=getRectF(pointS,pointE);
-                    if(tempRect.width()==0&&tempRect.height()==0)       //矩形区域为空
-                    {
-                        ellipseList.removeLast();
-                        break;
-                    }
-                    ellipseList.replace(ellipseList.length()-1,tempRect);
+                    ellipseList.last().setTopLeft(pointS);
+                    ellipseList.last().setBottomRight(pointE);
                 }
 
                 break;
@@ -326,9 +318,26 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
             {
                 showToolBar();
             }
-            else
+            else if(drawEditFlag==1)
             {
-
+                if( (pointS.x()==pointE.x()) && (pointS.y()==pointE.y()) )//直线长度为0
+                {
+                    lineList.removeLast();
+                }
+            }
+            else if(drawEditFlag==2)
+            {
+                if( (pointS.x()==pointE.x()) && (pointS.y()==pointE.y()) )//矩形区域为空
+                {
+                    rectList.removeLast();
+                }
+            }
+            else if(drawEditFlag==3)
+            {
+                if( (pointS.x()==pointE.x()) && (pointS.y()==pointE.y()) )//矩形区域为空
+                {
+                    ellipseList.removeLast();
+                }
             }
         }
 
@@ -378,9 +387,9 @@ void Canvas::paintEvent(QPaintEvent *e)
     quint16 len=lineList.length();
     if(len)
     {
-        painter.setPen(QPen(Qt::red,2,Qt::SolidLine));//设置画笔形式
         for(quint16 i=0;i<len;i++)
         {
+            painter.setPen(lineList[i].getPen());//设置画笔形式
             painter.drawLine(lineList[i]);            //然后绘制矩形框
         }
     }
@@ -388,9 +397,9 @@ void Canvas::paintEvent(QPaintEvent *e)
     len=rectList.length();
     if(len)
     {
-        painter.setPen(QPen(Qt::red,2,Qt::SolidLine));//设置画笔形式
         for(quint16 i=0;i<len;i++)
         {
+            painter.setPen(rectList[i].getPen());//设置画笔形式
             painter.drawRect(rectList[i]);            //然后绘制矩形框
         }
     }
@@ -398,9 +407,9 @@ void Canvas::paintEvent(QPaintEvent *e)
     len=ellipseList.length();
     if(len)
     {
-        painter.setPen(QPen(Qt::red,2,Qt::SolidLine));//设置画笔形式
         for(quint16 i=0;i<len;i++)
         {
+            painter.setPen(ellipseList[i].getPen());//设置画笔形式
             painter.drawEllipse(ellipseList[i]);            //然后绘制矩形框
         }
     }
@@ -451,28 +460,54 @@ void Canvas::initToolBar()                  //工具条初始化
 
     cbx_lineSize=new QComboBox();
     btn_colorSelect=new QPushButton();
-    lineStyle=new QComboBox();
+    cbx_lineStyle=new QComboBox();
 
     QStringList sizeitems;
     sizeitems<<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7"<<"8"<<"9"<<"10"<<"11"<<"12"<<"13"<<"14"<<"15"<<"16"<<"17"<<"18"<<"19"<<"20";
     cbx_lineSize->addItems(sizeitems);
     btn_colorSelect->setStyleSheet("background-color: rgb(255, 0, 0);");
 
-    lineStyle->addItem(QIcon(":/pic/1.ico"),"");
-    lineStyle->addItem(QIcon(":/pic/2.ico"),"");
-    lineStyle->addItem(QIcon(":/pic/3.ico"),"");
-    lineStyle->addItem(QIcon(":/pic/4.ico"),"");
-    lineStyle->addItem(QIcon(":/pic/5.ico"),"");
-    lineStyle->setIconSize(QSize(80,20));
+    cbx_lineStyle->addItem(QIcon(":/pic/1.ico"),"");
+    cbx_lineStyle->addItem(QIcon(":/pic/2.ico"),"");
+    cbx_lineStyle->addItem(QIcon(":/pic/3.ico"),"");
+    cbx_lineStyle->addItem(QIcon(":/pic/4.ico"),"");
+    cbx_lineStyle->addItem(QIcon(":/pic/5.ico"),"");
+    cbx_lineStyle->setIconSize(QSize(80,20));
     shapeToolLayout->addWidget(cbx_lineSize);
     shapeToolLayout->addWidget(btn_colorSelect);
-    shapeToolLayout->addWidget(lineStyle);
+    shapeToolLayout->addWidget(cbx_lineStyle);
     shapeToolLayout->addStretch();
     shapeToolLayout->setContentsMargins(0,0,0,0);            //去除边框间隙
     shapeToolLayout->setSpacing(0);
     shapeToolBar->setLayout(shapeToolLayout);
     shapeToolBar->setVisible(false);
 
+    //初始化拓展工具的初始状态
+    cbx_lineSize->setCurrentText(QString::number(drawPen.width()));
+    QColor color=drawPen.brush().color();
+    QString colorStyle=QString("background-color: rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue());
+    btn_colorSelect->setStyleSheet(colorStyle);
+    switch(drawPen.style())
+    {
+    case Qt::SolidLine:
+        cbx_lineStyle->setCurrentIndex(0);
+        break;
+    case Qt::DashLine:
+        cbx_lineStyle->setCurrentIndex(1);
+        break;
+    case Qt::DotLine:
+        cbx_lineStyle->setCurrentIndex(2);
+        break;
+    case Qt::DashDotLine:
+        cbx_lineStyle->setCurrentIndex(3);
+        break;
+    case Qt::DashDotDotLine:
+        cbx_lineStyle->setCurrentIndex(4);
+        break;
+    default:
+        cbx_lineStyle->setCurrentIndex(0);
+        break;
+    }
 
     QVBoxLayout *toolLayout=new QVBoxLayout();
     toolLayout->addWidget(MainToolBar);
@@ -486,12 +521,19 @@ void Canvas::initToolBar()                  //工具条初始化
     btn_drawRect->setStyleSheet("background-color: rgb(255, 255, 255);");
     btn_drawEllipse->setStyleSheet("background-color: rgb(255, 255, 255);");
 
+    hideToolBar();
+
     connect(btn_drawLine,SIGNAL(clicked(bool)),this,SLOT(slt_drawLine()));
     connect(btn_drawRect,SIGNAL(clicked(bool)),this,SLOT(slt_drawRect()));
     connect(btn_drawEllipse,SIGNAL(clicked(bool)),this,SLOT(slt_drawEllipse()));
     connect(btn_cancel,SIGNAL(clicked(bool)),this,SLOT(slt_cancel()));
     connect(btn_saveClipboard,SIGNAL(clicked(bool)),this,SLOT(slt_saveClipboard()));
     connect(btn_saveFile,SIGNAL(clicked(bool)),this,SLOT(slt_saveFile()));
+
+    //拓展工具信号槽
+    connect(cbx_lineSize,SIGNAL(currentTextChanged(QString)),this,SLOT(slt_changePenWidth(QString)));
+    connect(btn_colorSelect,SIGNAL(clicked(bool)),this,SLOT(slt_changePenColor()));
+    connect(cbx_lineStyle,SIGNAL(currentIndexChanged(int)),SLOT(slt_changePenStyle(int)));
 }
 
 void Canvas::showToolBar()            //显示工具条
@@ -659,8 +701,52 @@ void Canvas::slt_cancel()
     this->close();
 }
 
+void Canvas::slt_changePenWidth(QString s)
+{
+    drawPen.setWidth(s.toInt());
+}
+
+void Canvas::slt_changePenColor()
+{
+    QColor color = QColorDialog::getColor(Qt::blue);
+    if(color.isValid())
+    {
+        //如果颜色有效的话，将colorFrame设置为选中的颜色
+        //colorFrame->setPalette(QPalette(color));
+        //btn_colorSelect->setPalette(QPalette(color));
+        QString colorStyle=QString("background-color: rgb(%1, %2, %3);").arg(color.red()).arg(color.green()).arg(color.blue());
+        btn_colorSelect->setStyleSheet(colorStyle);
+    }
+    drawPen.setColor(color);
+}
+
+void Canvas::slt_changePenStyle(int index)
+{
+    switch(index)
+    {
+    case 0:
+        drawPen.setStyle(Qt::SolidLine);
+        break;
+    case 1:
+        drawPen.setStyle(Qt::DashLine);
+        break;
+    case 2:
+        drawPen.setStyle(Qt::DotLine);
+        break;
+    case 3:
+        drawPen.setStyle(Qt::DashDotLine);
+        break;
+    case 4:
+        drawPen.setStyle(Qt::DashDotDotLine);
+        break;
+    default:
+        drawPen.setStyle(Qt::SolidLine);
+        break;
+    }
+}
+
 //通过任意两点构造一个矩形
-QRectF Canvas::getRectF(QPointF p1, QPointF p2)
+RectPaint Canvas::getRectF(QPointF p1, QPointF p2)
 {
     float x1,y1,x2,y2;
     if(p1.x()<p2.x())
@@ -687,7 +773,7 @@ QRectF Canvas::getRectF(QPointF p1, QPointF p2)
 
     QPointF ps(x1,y1);
     QPointF pe(x2,y2);
-    QRectF rect(ps,pe);
+    RectPaint rect(ps,pe);
     return rect;
 }
 
