@@ -2,7 +2,13 @@
 这是一个使用QT设计的截图工具
 
 目前效果图
-![效果图](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/1.gif)
+![效果图1](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/1.gif)
+
+![效果图2](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/2.gif)
+
+![效果图3](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/3.gif)
+
+![效果图4](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/4.gif)
 
 # 历程
 ## 意动
@@ -87,13 +93,12 @@ originalPixmap = screen->grabWindow(0,30,50,(240-30),(350-50));
 4、通过重写鼠标和绘图函数来达到显示鼠标拖动区间，  
 5、截取鼠标拖动区间图案，弹出保存选项  
 6、手动调整截图区域  
-7、添加线、矩形以及椭圆标记功能  
+7、添加线、矩形以及椭圆标记功能，设置标记画笔  
 8、保存截屏到文件或保存截屏到剪切板或放弃截屏  
 9、退出  
 
 ## 待完善功能
-1、添加的标记支持编辑调整  
-2、自定义表示颜色  
+1、标记大小位置调整  
 
 # 使用
 使用很简单，无需过多介绍，展示一些示意图  
@@ -105,9 +110,6 @@ originalPixmap = screen->grabWindow(0,30,50,(240-30),(350-50));
 
 ![中文界面](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/2.jpg)
 
-截图效果
-
-![截图效果](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/1.gif)
 
 ## 提醒
 

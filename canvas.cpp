@@ -445,6 +445,10 @@ void Canvas::initToolBar()                  //工具条初始化
     btn_drawRect=new QPushButton(tr("Rect"));
     btn_drawEllipse=new QPushButton(tr("Ellipse"));
 
+    btn_cancel->setStyleSheet("background-color: rgb(255, 255, 255);");
+    btn_saveClipboard->setStyleSheet("background-color: rgb(255, 255, 255);");
+    btn_saveFile->setStyleSheet("background-color: rgb(255, 255, 255);");
+
     mainToolLayout->addWidget(btn_drawLine);
     mainToolLayout->addWidget(btn_drawRect);
     mainToolLayout->addWidget(btn_drawEllipse);

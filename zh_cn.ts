@@ -4,48 +4,48 @@
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="canvas.cpp" line="429"/>
-        <location filename="canvas.cpp" line="509"/>
+        <location filename="canvas.cpp" line="440"/>
+        <location filename="canvas.cpp" line="586"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="430"/>
-        <location filename="canvas.cpp" line="510"/>
+        <location filename="canvas.cpp" line="441"/>
+        <location filename="canvas.cpp" line="587"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="431"/>
-        <location filename="canvas.cpp" line="511"/>
+        <location filename="canvas.cpp" line="442"/>
+        <location filename="canvas.cpp" line="588"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="433"/>
-        <location filename="canvas.cpp" line="506"/>
+        <location filename="canvas.cpp" line="444"/>
+        <location filename="canvas.cpp" line="583"/>
         <source>Line</source>
         <translation>直线</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="434"/>
-        <location filename="canvas.cpp" line="507"/>
+        <location filename="canvas.cpp" line="445"/>
+        <location filename="canvas.cpp" line="584"/>
         <source>Rect</source>
         <translation>矩形</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="435"/>
-        <location filename="canvas.cpp" line="508"/>
+        <location filename="canvas.cpp" line="446"/>
+        <location filename="canvas.cpp" line="585"/>
         <source>Ellipse</source>
         <translation>椭圆</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="578"/>
+        <location filename="canvas.cpp" line="673"/>
         <source>Save File</source>
         <translation>保存文件</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="580"/>
+        <location filename="canvas.cpp" line="675"/>
         <source>JPEG File (*.jpg)</source>
         <translation>JPEG文件 (*.jpg)</translation>
     </message>
