@@ -202,6 +202,7 @@ void ScreenShotTool::setHotKey()
 
 bool ScreenShotTool::nativeEventFilter(const QByteArray &eventType, void *message, long *result)        //windows事件捕捉器
 {
+#ifdef Q_OS_WIN
     if(eventType == "windows_generic_MSG" || eventType == "windows_dispatcher_MSG")
     {
         MSG* msg = reinterpret_cast<MSG*>(message);
@@ -214,11 +215,13 @@ bool ScreenShotTool::nativeEventFilter(const QByteArray &eventType, void *messag
             }
         }
     }
+#endif
     return false;           //该函数一定要返回false，不然程序会直接崩溃
 }
 
 quint32 ScreenShotTool::nativeKeycode(Qt::Key key)                      //key值转换
 {
+#ifdef Q_OS_WIN
     switch (key)
     {
     case Qt::Key_Escape:
@@ -360,11 +363,14 @@ quint32 ScreenShotTool::nativeKeycode(Qt::Key key)                      //key值
     default:
         return 0;
     }
+#endif
+    return 0;
 }
 quint32 ScreenShotTool::nativeModifiers(Qt::KeyboardModifiers modifiers)                //mod值转换
 {
-    // MOD_ALT, MOD_CONTROL, (MOD_KEYUP), MOD_SHIFT, MOD_WIN
     quint32 native = 0;
+#ifdef Q_OS_WIN
+    // MOD_ALT, MOD_CONTROL, (MOD_KEYUP), MOD_SHIFT, MOD_WIN
     if (modifiers & Qt::ShiftModifier)
         native |= MOD_SHIFT;
     if (modifiers & Qt::ControlModifier)
@@ -376,18 +382,23 @@ quint32 ScreenShotTool::nativeModifiers(Qt::KeyboardModifiers modifiers)        
     // TODO: resolve these?
     //if (modifiers & Qt::KeypadModifier)
     //if (modifiers & Qt::GroupSwitchModifier)
+#endif
     return native;
 }
 
 bool  ScreenShotTool::registerHotKey(Qt::Key key,Qt::KeyboardModifiers modifiers)       //注册快捷键
 {
+#ifdef Q_OS_WIN
     const quint32 nativeKey = nativeKeycode(key);
     const quint32 nativeMods = nativeModifiers(modifiers);
     return RegisterHotKey(0, nativeMods ^ nativeKey, nativeMods, nativeKey);
+#endif
 }
 bool  ScreenShotTool::unregisterHotKey(Qt::Key key,Qt::KeyboardModifiers modifiers)     //注销快捷键
 {
+#ifdef Q_OS_WIN
     return UnregisterHotKey(0, (quint32)nativeModifiers(modifiers) ^ (quint32)nativeKeycode(key));
+#endif
 }
 
 void ScreenShotTool::slt_changeHotKey(Qt::Key t_key, Qt::KeyboardModifiers t_mod)      //快捷键修改
