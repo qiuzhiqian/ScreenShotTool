@@ -19,7 +19,5 @@ int main(int argc, char *argv[])
     ScreenShotTool w;
     w.hide();
 
-    a.installNativeEventFilter(&w);             //注册windows全局事件，用来启用全局热键
-
     return a.exec();
 }

@@ -22,17 +22,13 @@
 #include "canvas.h"
 #include "hotkeybar.h"
 
-#include <QAbstractNativeEventFilter>
-
-#ifdef Q_OS_WIN
-#include <windows.h>
-#endif
+#include "qxtglobalshortcut.h"
 
 namespace Ui {
 class ScreenShotTool;
 }
 
-class ScreenShotTool : public QWidget,public QAbstractNativeEventFilter     //继承QAbstractNativeEventFilter用来捕捉windows事件，从而实现全局热键
+class ScreenShotTool : public QWidget
 {
     Q_OBJECT
 
@@ -44,13 +40,6 @@ public:
     void ss_start();                //开始截图
 
     void setHotKey();
-
-    virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result);
-
-    quint32 nativeKeycode(Qt::Key key);
-    quint32 nativeModifiers(Qt::KeyboardModifiers modifiers);
-    bool  registerHotKey(Qt::Key key,Qt::KeyboardModifiers modifiers);
-    bool  unregisterHotKey(Qt::Key key,Qt::KeyboardModifiers modifiers);
 
     void setAutoRun(bool sta);
 
@@ -80,6 +69,8 @@ private:
 
     bool isAutoRun=false;
 
+    QxtGlobalShortcut *shortcut;
+
 signals:
     void appQuit();
 
@@ -95,6 +86,8 @@ private slots:
 
     void slt_auto_run(int states);
     void slt_language_set(int index);
+
+    void slt_doShot(void);
 };
 
 #endif // SCREENSHOTTOOL_H

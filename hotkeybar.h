@@ -21,6 +21,7 @@ public:
     HotKeyBar(QWidget *parent = 0);
     void setHotKey(Qt::Key t_key, Qt::KeyboardModifiers t_mod);
     void setShowText(Qt::Key t_key, Qt::KeyboardModifiers t_mod);
+    void setShowText(QString keystr);
     void setKeyString(KeyString *t_keystring);
 
 private:

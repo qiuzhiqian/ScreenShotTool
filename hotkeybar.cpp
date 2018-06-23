@@ -35,6 +35,11 @@ void HotKeyBar::setShowText(Qt::Key t_key, Qt::KeyboardModifiers t_mod)
     setText(showtext);
 }
 
+void HotKeyBar::setShowText(QString keystr)
+{
+    setText(keystr);
+}
+
 void HotKeyBar::focusInEvent(QFocusEvent *e)
 {
     QLineEdit::focusInEvent(e);

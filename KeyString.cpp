@@ -88,13 +88,13 @@ QString KeyString::Key2String(Qt::Key t_key, Qt::KeyboardModifiers t_mod)
         modstr="";
         break;
     case Qt::ShiftModifier:
-        modstr="SHIFT";
+        modstr="Shift";
         break;
     case Qt::ControlModifier:
-        modstr="CTRL";
+        modstr="Ctrl";
         break;
     case Qt::AltModifier:
-        modstr="ATL";
+        modstr="Atl";
         break;
     default:
         modstr="";
@@ -136,15 +136,15 @@ void KeyString::String2Key(QString str,Qt::Key &t_key, Qt::KeyboardModifiers &t_
     {
         t_mod=Qt::NoModifier;
     }
-    else if(modstr=="SHIFT")
+    else if(modstr=="Shift")
     {
         t_mod=Qt::ShiftModifier;
     }
-    else if(modstr=="CTRL")
+    else if(modstr=="Ctrl")
     {
         t_mod=Qt::ControlModifier;
     }
-    else if(modstr=="ATL")
+    else if(modstr=="Atl")
     {
         t_mod=Qt::AltModifier;
     }
