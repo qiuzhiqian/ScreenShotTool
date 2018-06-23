@@ -100,6 +100,19 @@ originalPixmap = screen->grabWindow(0,30,50,(240-30),(350-50));
 ## 待完善功能
 1、标记大小位置调整  
 
+# 多语言  
+本源码提供了两种内置语言的翻译文件：英文和中文。  
+- 英文翻译文件:en.ts  
+- 中文翻译文件:zh_cn.ts  
+
+## 使用方法  
+### 1、生成ts对应的qm文件  
+方法一：使用打开源代码，选择"工具"->"外部"->"Qt语言专家"->"发布翻译"，然后得到对应的qm文件。  
+方法二：直接使用qtcreator对应的翻译家Linguist生成对应的qm文件，具体使用方法自行了解。  
+### 2、将qm文件放置于运行目录下  
+使用qtcreator时编译调试时类似于build-ScreenShotTool-Desktop_Qt_5_9_0_MinGW_32bit-Debug目录下  
+发布时请至于ScreenShotTool执行程序的同级目录下
+
 # 使用
 使用很简单，无需过多介绍，展示一些示意图  
 英文界面
@@ -109,7 +122,6 @@ originalPixmap = screen->grabWindow(0,30,50,(240-30),(350-50));
 中文界面
 
 ![中文界面](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/2.jpg)
-
 
 ## 提醒
 

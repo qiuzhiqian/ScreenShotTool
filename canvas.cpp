@@ -310,6 +310,7 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
             pointE.setY(event->y());
             shotArea=getRectF(pointS,pointE);
             rectFlag=DrawStatus::drawed;         //矩形绘制完成
+            qDebug()<<"draw end.";
             showToolBar();
         }
         else if(rectFlag==DrawStatus::drawed)
@@ -519,6 +520,11 @@ void Canvas::initToolBar()                  //工具条初始化
     toolLayout->setContentsMargins(0,0,0,0);            //去除边框间隙
     toolLayout->setSpacing(0);
     toolbar->setLayout(toolLayout);
+    toolbar->setVisible(true);      //如果不显示的话，后面的width和height会计算不准
+    toolBarWidth = toolbar->width();
+    toolBarHeight = toolbar->height();
+    qDebug()<<"W:"<<toolBarWidth;
+    qDebug()<<"H:"<<toolBarHeight;
     toolbar->setVisible(false);
 
     btn_drawLine->setStyleSheet("background-color: rgb(255, 255, 255);");
@@ -544,9 +550,14 @@ void Canvas::showToolBar()            //显示工具条
 {
     qreal x,y;
 
-    int bar_width=toolbar->width();
-    int bar_height=toolbar->height();
+    int bar_width=toolBarWidth;//toolbar->width();
+    int bar_height=toolBarHeight;//toolbar->height();
     int offset=5;
+
+    qDebug()<<"bottomLeft().x"<<shotArea.bottomLeft().x();
+    qDebug()<<"bar_width"<<bar_width;
+    qDebug()<<"offset"<<offset;
+    qDebug()<<"screen_width"<<screen_width;
 
     if(shotArea.bottomLeft().x()+bar_width+offset<screen_width)      //x轴方向边距足够
     {
@@ -554,6 +565,7 @@ void Canvas::showToolBar()            //显示工具条
     }
     else                                                //x轴方向边距不足
     {
+        qDebug()<<"no more x.";
         x=screen_width-(bar_width+offset);
     }
 
@@ -668,7 +680,7 @@ void Canvas::slt_saveFile()
 {
     shootScreen(shotArea);
     QDateTime current_date_time = QDateTime::currentDateTime();
-    QString current_date = current_date_time.toString("yyyyMMdd_hhmmss");
+    QString current_date = current_date_time.toString("yyyyMMdd_hhmmsszzz");
     QString savefile="ScreenShot_"+current_date+".jpg";
 
     QString savepath=OperateSet::readSetting("Setting","QuickSaveDir",".").toString();
@@ -676,8 +688,9 @@ void Canvas::slt_saveFile()
     QString fileName = QFileDialog::getSaveFileName(this,
             tr("Save File"),
             savepath+"/"+savefile,
-            tr("JPEG File (*.jpg)"));
-    originalPixmap.save(fileName,"jpg");
+            tr("JPEG File (*.jpg);;BMP File (*.bmp);;PNG File (*.png);;PPM File (*.ppm);;XBM File (*.xbm);;XPM File (*.xpm)")
+    );
+    originalPixmap.save(fileName);
 
     QFileInfo fi = QFileInfo(fileName);
     //QString file_name = fi.fileName();

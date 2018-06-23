@@ -118,6 +118,9 @@ private:
     QWidget *shapeToolBar;
     QWidget *textToolBar;
 
+    int toolBarWidth;
+    int toolBarHeight;
+
     QComboBox *cbx_lineSize;
     QPushButton *btn_colorSelect;
     QComboBox *cbx_lineStyle;

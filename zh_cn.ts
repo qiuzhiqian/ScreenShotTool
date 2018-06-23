@@ -5,49 +5,53 @@
     <name>Canvas</name>
     <message>
         <location filename="canvas.cpp" line="440"/>
-        <location filename="canvas.cpp" line="586"/>
+        <location filename="canvas.cpp" line="590"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>
     <message>
         <location filename="canvas.cpp" line="441"/>
-        <location filename="canvas.cpp" line="587"/>
+        <location filename="canvas.cpp" line="591"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
         <location filename="canvas.cpp" line="442"/>
-        <location filename="canvas.cpp" line="588"/>
+        <location filename="canvas.cpp" line="592"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
         <location filename="canvas.cpp" line="444"/>
-        <location filename="canvas.cpp" line="583"/>
+        <location filename="canvas.cpp" line="587"/>
         <source>Line</source>
         <translation>直线</translation>
     </message>
     <message>
         <location filename="canvas.cpp" line="445"/>
-        <location filename="canvas.cpp" line="584"/>
+        <location filename="canvas.cpp" line="588"/>
         <source>Rect</source>
         <translation>矩形</translation>
     </message>
     <message>
         <location filename="canvas.cpp" line="446"/>
-        <location filename="canvas.cpp" line="585"/>
+        <location filename="canvas.cpp" line="589"/>
         <source>Ellipse</source>
         <translation>椭圆</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="673"/>
+        <location filename="canvas.cpp" line="677"/>
         <source>Save File</source>
         <translation>保存文件</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="675"/>
+        <location filename="canvas.cpp" line="679"/>
+        <source>JPEG File (*.jpg);;BMP File (*.bmp);;PNG File (*.png);;PPM File (*.ppm);;XBM File (*.xbm);;XPM File (*.xpm)</source>
+        <translation>JPEG 文件 (*.jpg);;BMP 文件 (*.bmp);;PNG 文件 (*.png);;PPM 文件 (*.ppm);;XBM 文件 (*.xbm);;XPM 文件 (*.xpm)</translation>
+    </message>
+    <message>
         <source>JPEG File (*.jpg)</source>
-        <translation>JPEG文件 (*.jpg)</translation>
+        <translation type="vanished">JPEG文件 (*.jpg)</translation>
     </message>
 </context>
 <context>
@@ -70,9 +74,9 @@
     <message>
         <location filename="screenshottool.ui" line="36"/>
         <location filename="screenshottool.cpp" line="59"/>
-        <location filename="screenshottool.cpp" line="128"/>
-        <location filename="screenshottool.cpp" line="472"/>
-        <location filename="screenshottool.cpp" line="473"/>
+        <location filename="screenshottool.cpp" line="131"/>
+        <location filename="screenshottool.cpp" line="294"/>
+        <location filename="screenshottool.cpp" line="295"/>
         <source>Setting</source>
         <translation>设置</translation>
     </message>
@@ -95,14 +99,14 @@
         <translation type="vanished">中文</translation>
     </message>
     <message>
-        <location filename="screenshottool.cpp" line="129"/>
-        <location filename="screenshottool.cpp" line="474"/>
+        <location filename="screenshottool.cpp" line="132"/>
+        <location filename="screenshottool.cpp" line="296"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="screenshottool.cpp" line="130"/>
-        <location filename="screenshottool.cpp" line="475"/>
+        <location filename="screenshottool.cpp" line="133"/>
+        <location filename="screenshottool.cpp" line="297"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>
