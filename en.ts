@@ -4,48 +4,59 @@
 <context>
     <name>Canvas</name>
     <message>
-        <location filename="canvas.cpp" line="440"/>
-        <location filename="canvas.cpp" line="590"/>
+        <location filename="canvas.cpp" line="480"/>
+        <location filename="canvas.cpp" line="674"/>
         <source>Quit</source>
         <translation>Quit</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="441"/>
-        <location filename="canvas.cpp" line="591"/>
+        <location filename="canvas.cpp" line="481"/>
+        <location filename="canvas.cpp" line="675"/>
         <source>Copy</source>
         <translation>Copy</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="442"/>
-        <location filename="canvas.cpp" line="592"/>
+        <location filename="canvas.cpp" line="482"/>
+        <location filename="canvas.cpp" line="676"/>
         <source>Save</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="444"/>
-        <location filename="canvas.cpp" line="587"/>
+        <location filename="canvas.cpp" line="484"/>
+        <location filename="canvas.cpp" line="670"/>
         <source>Line</source>
         <translation>Line</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="445"/>
-        <location filename="canvas.cpp" line="588"/>
+        <location filename="canvas.cpp" line="485"/>
+        <location filename="canvas.cpp" line="671"/>
         <source>Rect</source>
         <translation>Rect</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="446"/>
-        <location filename="canvas.cpp" line="589"/>
+        <location filename="canvas.cpp" line="486"/>
+        <location filename="canvas.cpp" line="672"/>
         <source>Ellipse</source>
         <translation>Ellipse</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="677"/>
+        <location filename="canvas.cpp" line="487"/>
+        <location filename="canvas.cpp" line="673"/>
+        <source>Text</source>
+        <translation>Text</translation>
+    </message>
+    <message>
+        <location filename="canvas.cpp" line="563"/>
+        <source>Font:10</source>
+        <translation>Font:10</translation>
+    </message>
+    <message>
+        <location filename="canvas.cpp" line="801"/>
         <source>Save File</source>
         <translation>Save File</translation>
     </message>
     <message>
-        <location filename="canvas.cpp" line="679"/>
+        <location filename="canvas.cpp" line="803"/>
         <source>JPEG File (*.jpg);;BMP File (*.bmp);;PNG File (*.png);;PPM File (*.ppm);;XBM File (*.xbm);;XPM File (*.xpm)</source>
         <translation>JPEG File (*.jpg);;BMP File (*.bmp);;PNG File (*.png);;PPM File (*.ppm);;XBM File (*.xbm);;XPM File (*.xpm)</translation>
     </message>

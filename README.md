@@ -10,6 +10,8 @@
 
 ![效果图4](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/4.gif)
 
+![效果图5](https://raw.githubusercontent.com/qiuzhiqian/ScreenShotTool/master/doc/3.jpg)
+
 # 历程
 ## 意动
 现在网上免费的截图工具很多，最近用了一款很不错的，叫Snipaste。

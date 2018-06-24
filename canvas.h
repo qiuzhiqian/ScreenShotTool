@@ -31,9 +31,11 @@
 #include <QComboBox>
 
 #include <QColorDialog>
+#include <QFontDialog>
 
 #include "linepaint.h"
 #include "rectpaint.h"
+#include "textpaint.h"
 
 enum DrawStatus {
     waitDraw=0,
@@ -78,6 +80,7 @@ public slots:
     void slt_drawLine();
     void slt_drawRect();
     void slt_drawEllipse();
+    void slt_drawText();
     void slt_saveFile();            //保存到文件
     void slt_saveClipboard();       //保存到剪切板
     void slt_cancel();
@@ -85,6 +88,9 @@ public slots:
     void slt_changePenWidth(QString s);
     void slt_changePenColor();
     void slt_changePenStyle(int index);
+
+    void slt_changeTextColor();
+    void slt_changeTextFont();
 
 private:
     int screen_width=0,screen_height=0;
@@ -97,6 +103,7 @@ private:
     QList<LinePaint> lineList;         //直线列表
     QList<RectPaint> rectList;         //矩形列表
     QList<RectPaint> ellipseList;      //椭圆列表
+    QList<TextPaint *> textList;          //文本列表
 
     QPointF pointDrag;              //拖拽点
 
@@ -113,6 +120,7 @@ private:
     QPushButton *btn_drawLine;      //画直线
     QPushButton *btn_drawRect;      //画矩形
     QPushButton *btn_drawEllipse;   //画椭圆
+    QPushButton *btn_drawText;      //添加文本
 
     QPen drawPen;                   //线宽颜色风格
     QWidget *shapeToolBar;
@@ -124,6 +132,11 @@ private:
     QComboBox *cbx_lineSize;
     QPushButton *btn_colorSelect;
     QComboBox *cbx_lineStyle;
+
+    QPushButton *btn_colorText;
+    QPushButton *btn_FontText;
+    QColor textcolor;
+    QFont textfont;
 
     QClipboard *clipboard;
 

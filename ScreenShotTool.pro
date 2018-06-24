@@ -32,7 +32,8 @@ SOURCES += \
     KeyString.cpp \
     hotkeybar.cpp \
     rectpaint.cpp \
-    linepaint.cpp
+    linepaint.cpp \
+    textpaint.cpp
 
 HEADERS += \
         screenshottool.h \
@@ -41,7 +42,8 @@ HEADERS += \
     hotkeybar.h \
     operateSet.h \
     rectpaint.h \
-    linepaint.h
+    linepaint.h \
+    textpaint.h
 
 FORMS += \
         screenshottool.ui
