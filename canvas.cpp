@@ -397,15 +397,28 @@ void Canvas::paintEvent(QPaintEvent *e)
         painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
         //painter.setBrush(Qt::white);
         painter.drawRect(shotArea);            //然后绘制矩形框
-        painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
+        fullPixmap.setDevicePixelRatio(2.0);
+        QScreen *screen = QGuiApplication::primaryScreen();
+        RectPaint shotAreaOnImage;
+        shotAreaOnImage.setX(shotArea.x()*screen->orientation());
+        shotAreaOnImage.setY(shotArea.y()*screen->orientation());
+        shotAreaOnImage.setWidth(shotArea.width()*screen->orientation());
+        shotAreaOnImage.setHeight(shotArea.height()*screen->orientation());
+        painter.drawPixmap(shotArea,fullPixmap,shotAreaOnImage);     //然后将矩形框中的半透明图像替换成原图
         break;
     }
     case DrawStatus::drawed:
     {
         painter.setPen(QPen(Qt::green,2,Qt::DashLine));//设置画笔形式
         //painter.setBrush(Qt::white);
+        QScreen *screen = QGuiApplication::primaryScreen();
+        RectPaint shotAreaOnImage;
+        shotAreaOnImage.setX(shotArea.x()*screen->orientation());
+        shotAreaOnImage.setY(shotArea.y()*screen->orientation());
+        shotAreaOnImage.setWidth(shotArea.width()*screen->orientation());
+        shotAreaOnImage.setHeight(shotArea.height()*screen->orientation());
         painter.drawRect(shotArea);            //然后绘制矩形框
-        painter.drawPixmap(shotArea,fullPixmap,shotArea);     //然后将矩形框中的半透明图像替换成原图
+        painter.drawPixmap(shotArea,fullPixmap,shotAreaOnImage);     //然后将矩形框中的半透明图像替换成原图
         break;
     }
     default:
